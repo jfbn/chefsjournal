@@ -9,7 +9,7 @@ class CookService {
         return await Cook.deleteOne( {"_id": id});
     }
     static async update(obj){
-        return await Cook.update({_id: obj._id}, obj);
+        return await Cook.updateOne({_id: obj._id}, obj);
         
     }
 }

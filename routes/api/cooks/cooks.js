@@ -8,6 +8,7 @@ const CookModel = require('../../../models/model_cook');
 
 router.get('/', (req, res) => {
     CookModel.find({}).then(model => {
+        console.log
         return res.json({model});
     })
 });
