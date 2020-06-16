@@ -6,12 +6,9 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 // load routes
-const pagesRoute = require('./routes/pages/pages');
 const apiRoute = require('./routes/api/api');
 
-
 app.use('/api/', apiRoute);
-app.use('/', pagesRoute);
 
 const PORT = 8080;
 

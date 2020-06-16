@@ -1,0 +1,5 @@
+{
+    "DB_ADRESS": "localhost",
+    "DB_NAME": "chefsjournal",
+    "DB_PORT": 27017
+}

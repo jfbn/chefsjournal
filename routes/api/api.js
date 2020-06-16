@@ -5,7 +5,7 @@ const router = express.Router();
 const cooksApi = require('./cooks/cooks');
 const usersApi = require('./users/users');
 
-// fetch db connection
+// establish db connection
 const db = require('../../connection/mongodb_connection');
 
 router.use('/cooks/', cooksApi);
