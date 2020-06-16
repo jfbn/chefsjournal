@@ -1,16 +1,64 @@
 const express = require('express');
 const router = express.Router();
 
-// fetch db connection
-const { connection } = require('../../../connection/mongodb_connection');
+const CookService = require('../../../services/cookservice');
 
-router.get('/pd/', (req, res) => {
-    return res.send("dw");
+// fetch mongoose model
+const CookModel = require('../../../models/model_cook');
+
+router.get('/', (req, res) => {
+    CookModel.find({}).then(model => {
+        return res.json({model});
+    })
 });
 
-router.get('/pp/', (req, res) => {
-    return res.send("dw");
+router.get('/:name', (req, res) => {
+    CookModel.find({dishName: req.params.name}).then(model => {
+        return res.json({model});
+    })
 });
 
+// save a new cook document to mongodb
+router.post('/', async (req, res) => {
+    try {
+        const createResult = await CookService.create(req.body);
+        return res.status(201).json({ success: createResult });
+      } catch (err) {
+        // Make sure that this is a validation error and send it back to the caller
+        if (err.name === 'ValidationError') {
+          return res.status(400).json({ error: err.message });
+        } else {
+            return res.status(400).json({ error: err.message });
+        }
+      }
+
+});
+
+router.get('/:name', (req, res) => {
+    CookModel.find({dishName: req.params.name}).then(model => {
+        return res.json({model});
+    })
+});
+
+router.delete('/:id', async (req, res) => {
+    console.log("got a delete request");
+    try {
+        const createResult = await CookService.delete(req.params.id);
+        return res.status(201).json({ success: createResult });
+      } catch (err) {
+        // Make sure that this is a validation error and send it back to the caller
+            return res.status(400).json({ error: err.message });
+        }
+});
+
+router.put('/', async (req, res) => {
+    try {
+        const createResult = await CookService.update(req.body);
+        return res.status(201).json({ success: createResult });
+      } catch (err) {
+        // Make sure that this is a validation error and send it back to the caller
+            return res.status(400).json({ error: err.message });
+        }
+})
 
 module.exports = router;
