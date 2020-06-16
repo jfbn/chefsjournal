@@ -3,12 +3,15 @@ const router = express.Router();
 
 // get children endpoints
 const cooksApi = require('./cooks/cooks');
-const usersApi = reuqire('./users/users');
+const usersApi = require('./users/users');
 
 // fetch db connection
-const { connection } = require('../../../connection/mongodb_connection');
+const db = require('../../connection/mongodb_connection');
 
-router.use('/cooks', cooksApi);
-router.use('users', usersApi);
+router.use('/cooks/', cooksApi);
+router.use('/users', usersApi);
+router.use('/', (req, res) => {
+    return res.send("theres nothing here")
+})
 
 module.exports = router;

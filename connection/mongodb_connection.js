@@ -4,7 +4,10 @@ mongoose.connect(
     'mongodb://localhost:27017/chefsjournal',
     err => {
       console.log(err);
-  },
-);
+  }).then( () => {
+    console.log("connected to db")
+  });
 
-module.exports = mongoose;
+
+
+module.exports = db;
