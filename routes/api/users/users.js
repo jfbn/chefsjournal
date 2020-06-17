@@ -8,7 +8,6 @@ const UserService = require('../../../services/userservice');
 // configure bcrypt
 const saltRounds = 8;
 
-
 // get the users mongoose model
 const UserModel = require('../../../models/model_user');
 
@@ -32,7 +31,7 @@ router.post('/', (req, res) => {
               } catch (err) {
                 // Make sure that this is a validation error and send it back to the caller
                 if (err.name === 'ValidationError') {
-                  return res.status(400).json({ error: err.message });
+                    return res.status(400).json({ error: err.message });
                 } else {
                     return res.status(400).json({ error: err.message });
                 }
