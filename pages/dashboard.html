@@ -6,6 +6,24 @@
     <title>sdsd</title>
 </head>
 <body>
-    <p>ll</p>
+    <p>lasdasdl</p>
+    <button id="logout" value="logout">Logout</button>
+
+    <script>
+        document.getElementById('logout').addEventListener('click', (event) => {
+        // TODO do something here to show user that form is being submitted
+        fetch('http://localhost:8080/api/auth/logout', {
+            method: 'GET',
+        }).then((resp) => {
+            return resp.json(); // or resp.text() or whatever the server sends
+        }).then((body) => {
+            console.log(body);
+            // TODO handle body
+        }).catch((error) => {
+            // TODO handle error
+        });
+    });
+    </script>
+
 </body>
 </html>

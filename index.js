@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 
 // setup body parsing
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
 
 
 // setup session handling
