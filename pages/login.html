@@ -56,7 +56,7 @@
 </head>
 <body>
     <div id="loginDiv" class="login-form">
-        <h1>Login</h1>
+        <img src="http://localhost:8080/img/chefsjournal_logo.png"/>
         <form id="loginForm" action="/api/auth/login" method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -82,27 +82,9 @@
 
 
         document.forms['loginForm'].addEventListener('submit', (event) => {
-            //event.preventDefault();
-            // TODO do something here to show user that form is being submitted
-
             let loader = document.createElement("DIV");
-
             loader.className += " loader";
-
             document.getElementById('submitButton').replaceWith(loader)
-
-            /* fetch(event.target.action, {
-                method: 'POST',
-                body: new URLSearchParams(new FormData(event.target)) // event.target is the form
-            }).then((resp) => {
-                console.log(resp);
-                return resp.json(); // or resp.text() or whatever the server sends
-            }).then((body) => {
-                console.log(body);
-                // TODO handle body
-            }).catch((error) => {
-                // TODO handle error
-            }); */
         });
     </script>
 </body>

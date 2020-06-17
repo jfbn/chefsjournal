@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
-const { DB_NAME, DB_PORT, DB_ADRESS } = require('../config/dbconfig.json');
+const { local, remote } = require('../config/dbconfig.json');
 
-mongoose.connect(`mongodb://${DB_ADRESS}:${DB_PORT}/${DB_NAME}`, err => {
-      console.log(err);
+
+
+mongoose.connect(`mongodb://${local.DB_ADRESS}:${local.DB_PORT}/${local.DB_NAME}`, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
+  if(err){
+    console.log(err);
+  }      
   }).then( () => {
     console.log("connected to db")
   });
