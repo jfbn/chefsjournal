@@ -17,6 +17,16 @@ router.get('/', async (req, res) => {
     })
 })
 
+router.get('/currentuser', (req, res) => {
+    console.log("dd")
+    if(req.session.username != undefined) {
+        return res.json(req.session);
+    }
+    else {
+        return res.status(400).send({response: "no logged in user"});
+    }
+})
+
 router.post('/', (req, res) => {
 
     const { username, password, firstname } = req.body;

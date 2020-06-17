@@ -4,8 +4,106 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+		.login-form {
+			width: 300px;
+			margin: 0 auto;
+			font-family: Tahoma, Geneva, sans-serif;
+		}
+		.login-form h1 {
+			text-align: center;
+			color: #4d4d4d;
+			padding: 20px 0 20px 0;
+			font-size: 24px;
+		}
+		.login-form input[type="password"],
+		.login-form input[type="text"] {
+			width: 100%;
+			padding: 15px;
+			border: 1px solid #dddddd;
+			margin-bottom: 15px;
+			box-sizing:border-box;
+		}
+		.login-form input[type="submit"] {
+			width: 100%;
+			padding: 15px;
+			background-color: #535b63;
+			border: 0;
+			box-sizing: border-box;
+			cursor: pointer;
+			font-weight: bold;
+			color: #ffffff;
+		}
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 2s linear infinite;
+        }
+        .forgot-pw-text {
+            color: #4d4d4d;
+			padding: 5px 0 20px 0;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+		</style>
 </head>
 <body>
-    login here
+    <div id="loginDiv" class="login-form">
+        <h1>Login</h1>
+        <form id="loginForm" action="/api/auth/login" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="submit" id="submitButton" value="Login">
+        </form>
+    </div>
+    <script>
+        fetch('http://localhost:8080/api/auth/session', {
+            method: 'GET'
+        }).then((resp) => {
+            return resp.json();
+        }).then((session) => {
+            
+            if(session.wrongpassword > 0) {
+                const forgotPasswordDiv = document.createElement("DIV");
+                forgotPasswordDiv.innerHTML = session.wrongpassword;;
+                forgotPasswordDiv.className += " forgot-pw-text"
+
+                document.getElementById('loginDiv').append(forgotPasswordDiv);
+            }
+
+        })
+
+
+        document.forms['loginForm'].addEventListener('submit', (event) => {
+            //event.preventDefault();
+            // TODO do something here to show user that form is being submitted
+
+            let loader = document.createElement("DIV");
+
+            loader.className += " loader";
+
+            document.getElementById('submitButton').replaceWith(loader)
+
+            /* fetch(event.target.action, {
+                method: 'POST',
+                body: new URLSearchParams(new FormData(event.target)) // event.target is the form
+            }).then((resp) => {
+                console.log(resp);
+                return resp.json(); // or resp.text() or whatever the server sends
+            }).then((body) => {
+                console.log(body);
+                // TODO handle body
+            }).catch((error) => {
+                // TODO handle error
+            }); */
+        });
+    </script>
 </body>
 </html>
