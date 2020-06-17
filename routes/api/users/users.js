@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 router.get('/currentuser', (req, res) => {
     console.log("dd")
     if(req.session.username != undefined) {
-        return res.json(req.session);
+        return res.json(req.session.username);
     }
     else {
         return res.status(400).send({response: "no logged in user"});
@@ -28,7 +28,6 @@ router.get('/currentuser', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-
     const { username, password, firstname } = req.body;
 
     if (username && password && firstname) {

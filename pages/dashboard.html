@@ -2,28 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <title>sdsd</title>
 </head>
 <body>
-    <p>lasdasdl</p>
-    <button id="logout" value="logout">Logout</button>
 
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-4">
+                sidebar area here
+            </div>
+            <div class="col-sm-8">
+                other stuff here
+            </div>
+
+        </div>
+    </div>
+
+    <form action="/">
+        <button id="logout" value="logout" type="button" class="btn btn-secondary">Logout</button>
+    </form>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
         document.getElementById('logout').addEventListener('click', (event) => {
-        // TODO do something here to show user that form is being submitted
-        fetch('http://localhost:8080/api/auth/logout', {
-            method: 'GET',
-        }).then((resp) => {
-            return resp.json(); // or resp.text() or whatever the server sends
-        }).then((body) => {
-            console.log(body);
-            // TODO handle body
-        }).catch((error) => {
-            // TODO handle error
+            fetch('http://localhost:8080/api/auth/logout', {
+                method: 'GET',
+            })
         });
-    });
     </script>
-
 </body>
 </html>

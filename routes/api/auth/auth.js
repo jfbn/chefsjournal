@@ -15,13 +15,15 @@ const UserModel = require('../../../models/model_user');
 
 router.post('/login', (req, res) =>{
     const { username, password } = req.body;
+    console.log("got");
 
 
     if( username && password ) {
         UserModel.findOne({"username": username})
             .then( model => {
                 if(model == null) {
-                    return res.status(500).send({response: 'dont find ur username'});
+                    console.log("no user");
+                    return res.redirect('/');
                 }
                 try {
                     bcrypt.compare(password, model.hash, (err, result) => {

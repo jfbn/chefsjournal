@@ -10,6 +10,8 @@ const mongoose = require('mongoose');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
+// server static files
+app.use(express.static('public'));
 
 // setup session handling
 app.use(session({
@@ -18,9 +20,6 @@ app.use(session({
     saveUninitialized: true,
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }))
-
-// configure static files usage
-app.use(express.static('public'));
 
 // load routes
 const apiRoute = require('./routes/api/api');
