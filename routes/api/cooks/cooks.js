@@ -13,6 +13,14 @@ router.get('/', (req, res) => {
     })
 });
 
+// find a users cooks
+router.post('/matching', (req, res) => {
+    CookModel.find(req.body).then( model => {
+        return res.json({model});
+    })
+})
+
+// find cooks matching the requested name
 router.get('/:name', (req, res) => {
     CookModel.find({dishName: req.params.name}).then(model => {
         return res.json({model});
@@ -22,6 +30,7 @@ router.get('/:name', (req, res) => {
 // save a new cook document to mongodb
 router.post('/', async (req, res) => {
     try {
+        //const createResult = await new CookModel(req.body).save();
         const createResult = await CookService.create(req.body);
         return res.status(201).json({ success: createResult });
       } catch (err) {
@@ -35,11 +44,6 @@ router.post('/', async (req, res) => {
 
 });
 
-router.get('/:name', (req, res) => {
-    CookModel.find({dishName: req.params.name}).then(model => {
-        return res.json({model});
-    })
-});
 
 router.delete('/:id', async (req, res) => {
     console.log("got a delete request");
