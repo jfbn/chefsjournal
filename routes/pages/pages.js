@@ -16,5 +16,14 @@ router.get('/', (req, res) => {
     return res.sendFile(pagesDir + '/login.html');
 })  
 
+router.get('/signup', (req, res) => {
+
+    if(req.session.username != undefined) {
+        return res.redirect('/');
+    }
+    return res.sendFile(pagesDir + '/signup.html');
+
+})
+
 
 module.exports = router;

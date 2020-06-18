@@ -30,6 +30,18 @@ const cookSchema = new mongoose.Schema( {
         required: [true, 'food doesnt cook itself'],
         minlength: 2,
         maxlength: 25
+    },
+    duration: {
+        type: Number,
+        required: [true, 'you have to specify the duration of the cook']
+    },
+    amountOfEaters: {
+        type: Number,
+        required: [true, 'You have to specify how many people this cook was for']
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 })
 
