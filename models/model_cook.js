@@ -23,7 +23,7 @@ const cookSchema = new mongoose.Schema( {
     },
     price: {
         type: Number,
-        required: [true, 'no food is free']
+        default: ''
     },
     chefName: {
         type: String,
@@ -42,6 +42,14 @@ const cookSchema = new mongoose.Schema( {
     date: {
         type: Date,
         default: Date.now
+    },
+    comments: {
+        type: String,
+        default: "No comments"
+    },
+    isVegan: {
+        type: Boolean,
+        default: false
     }
 })
 

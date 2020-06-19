@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'No users without names'],
         minlength: 2
+    },
+    email: {
+        type: String,
+        required: [true, 'Email is required']
+    },
+    subscribed: {
+        type: Boolean,
+        default: false
     }
 })
 
