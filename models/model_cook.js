@@ -14,7 +14,7 @@ const cookSchema = new mongoose.Schema( {
     },
     difficulty: {
         type: String,
-        enum: ['Easy', 'Simple', 'Intermediate', 'Challenging', 'Masterchef'],
+        enum: ['Easy', 'Simple', 'Intermediate', 'Challenging', 'Masterchef', 'Gordon Ramsay'],
         required: [true, 'you have to specify the difficulty of the dish']
     },
     ingredients: {
@@ -46,6 +46,10 @@ const cookSchema = new mongoose.Schema( {
     comments: {
         type: String,
         default: "No comments"
+    },
+    instructions: {
+        type: String,
+        default: "No instructions"
     },
     isVegan: {
         type: Boolean,

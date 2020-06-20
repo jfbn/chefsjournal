@@ -29,6 +29,7 @@ router.get('/:name', (req, res) => {
 
 // save a new cook document to mongodb
 router.post('/', async (req, res) => {
+    console.log("got cook post request with body: " + req.body)
     try {
         //const createResult = await new CookModel(req.body).save();
         const createResult = await CookService.create(req.body);

@@ -25,5 +25,15 @@ router.get('/signup', (req, res) => {
 
 })
 
+router.get('/newcook', (req, res) => {
+
+    if(req.session.username == undefined) {
+        console.log(req.session);
+        return res.redirect('/');
+    }
+    return res.sendFile(pagesDir + '/newcook.html');
+
+})
+
 
 module.exports = router;
