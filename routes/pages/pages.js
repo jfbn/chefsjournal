@@ -16,6 +16,15 @@ router.get('/', (req, res) => {
     return res.sendFile(pagesDir + '/login.html');
 })  
 
+router.get('/cook/:id', (req, res) => {
+    req.session.cookId = req.params.id;
+    return res.sendFile(pagesDir + '/specific_cook.html');
+})
+
+router.get('/cook', (req, res) => {
+    return res.sendFile(pagesDir + '/specific_cook.html');
+})
+
 router.get('/signup', (req, res) => {
 
     if(req.session.username != undefined) {

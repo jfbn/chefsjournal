@@ -13,8 +13,11 @@ router.get('/', (req, res) => {
     })
 });
 
+
+
 // find a users cooks
 router.post('/matching', (req, res) => {
+    console.log(req.body);
     CookModel.find(req.body).then( model => {
         return res.json({model});
     })
@@ -31,7 +34,8 @@ router.get('/:name', (req, res) => {
 router.post('/', async (req, res) => {
     console.log("got cook post request with body: " + req.body)
     try {
-        //const createResult = await new CookModel(req.body).save();
+        // get information about user from req.session and attach to the body
+        req.body.chefName = req.session.username;
         const createResult = await CookService.create(req.body);
         return res.status(201).json({ success: createResult });
       } catch (err) {

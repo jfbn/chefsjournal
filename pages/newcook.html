@@ -39,7 +39,9 @@
                 <ul class="list-group">
                     <li class="list-group-item"><a href="/">Profile</a></li>
                     <li class="list-group-item active"><a href="#">New cook</a></li>
+                    <li class="list-group-item"><a href="/cook">Specific cook</a></li>
                     <li class="list-group-item"><a href="/mystats">Stats</a></li>
+                    <li class="list-group-item"><a href="/chat">Chatroom</a></li>
                     <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
                 </ul>
             </div>
@@ -51,18 +53,18 @@
                     <form>
 
                         <div class="form-group">
-                            <label for="example-date-input" class="col-form-label">Date of cooking</label>
-                            <input class="form-control" type="date" value="2020-04-20" id="example-date-input">
-                        </div>
-
-                        <div class="form-group">
                             <label for="dishNameField">The name of the dish</label>
                             <input id="dishNameField" type="text" class="form-control" placeholder="Strawberry cheesecake" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="dishNameField">Ingredients</label>
-                            <input id="dishNameField" type="text" class="form-control" placeholder="Strawberry, ricotta, vanilla extract, sugar, flour, eggs" required>
+                            <label for="dateField" class="col-form-label">Date of cooking</label>
+                            <input class="form-control" type="date" value="2020-04-20" id="dateField">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ingredientsField">Ingredients</label>
+                            <input id="ingredientsField" type="text" class="form-control" placeholder="Strawberry, ricotta, vanilla extract, sugar, flour, eggs" required>
                             <small id="ingredientshelp" class="form-text text-muted">Seperate ingredients with comma and space</small>
                             <small id="ingredientshelp2" class="form-text text-muted">ie: <span style="font-style: italic">Strawberry, ricotta, vanilla extract</span></small>
                         </div>
@@ -94,7 +96,7 @@
                                     <div class="col-md-5">
                                         <div class="form-group">
                                             <label for="exampleFormControlSelect1">Currency</label>
-                                            <select class="form-control" id="exampleFormControlSelect1">
+                                            <select class="form-control" id="currencySelect">
                                                 <option>DKK</option>
                                                 <option>USD</option>
                                                 <option>EURO</option>
@@ -120,13 +122,13 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleFormControlTextarea1">Cooking instructions</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <label for="instructionsField">Cooking instructions</label>
+                            <textarea class="form-control" id="instructionsField" rows="3"></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="exampleFormControlTextarea1">Other comments</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                            <label for="commentsField">Other comments</label>
+                            <textarea class="form-control" id="commentsField" rows="3"></textarea>
                         </div>
 
 
@@ -143,6 +145,17 @@
     <script>
         document.getElementById('saveCookButton').addEventListener('click', (event) => {
             // TODO: check if necessary input is present
+            const dishName = document.getElementById('dishNameField').value;
+            const dishDate = document.getElementById('dateField').value;
+            const ingredients = document.getElementById('ingredientsField').value;
+            const duration = document.getElementById('durationField').value;
+            const servings = document.getElementById('amountOfEaters').value;
+            const cost = document.getElementById('costField').value;
+            const currency = document.getElementById('currencySelect').value;
+            const difficulty = document.getElementById('difficultySelect').value;
+            const instructions = document.getElementById('instructionsField').value;
+            const comments = document.getElementById('commentsField').value;
+
 
             // then -> send request with fetch
             fetch('http://localhost:8080/api/cooks/', {
@@ -151,12 +164,25 @@
                     "Content-type": "application/json"
                 },
                 body: JSON.stringify({
-                    "username": "test"
+                    "dishName": dishName,
+                    "date": dishDate,
+                    "ingredients": ingredients.split(", "),
+                    "duration": duration,
+                    "amountOfEaters": servings,
+                    "cost": {
+                        "amount": cost,
+                        "currency": currency
+                    },
+                    "difficulty": difficulty,
+                    "instructions": instructions,
+                    "comments": comments,
+
                 })
             }).then( reply => {
                 return reply.json();
             }).then ( json => {
                 console.log(json);
+                window.location.href = "http://localhost:8080/cook/" + json._id;
             })
         })
 
