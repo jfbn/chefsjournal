@@ -20,6 +20,11 @@
         #contentlist a {
             cursor: pointer;
         }
+        #messages {
+            height: 355px;
+            background: aqua;
+            overflow: auto;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +41,7 @@
 
 
         <div class="row">
-            <div class="col-sm-3" id="menutab">
+            <div class="col-sm-4" id="menutab">
                 <h2 id="greeting">Welcome, anon</h2>
                 <br>
                 <ul class="list-group">
@@ -48,11 +53,19 @@
                     <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
                 </ul>
             </div>
-            <div class="col-sm-9" id="contenttab">
+            <div class="col-sm-8" id="contenttab">
                 <h2>Chefs chatroom</h2>
                 <br>
                 <div id="contentlist">
-
+                    <div id="chat-room">
+                        <ul id="messages">
+                          
+                        </ul>  
+                        <h3 id="usertyping" class="d-none">someone is typing</h3>
+                        <form action="">
+                            <input id="messagefield" type="text"/><button>send</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -61,6 +74,45 @@
     <script src="http://localhost:8080/js/getsession.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+    $(async function () {
+
+        const reply = await fetch('http://localhost:8080/api/auth/session', {
+            type: 'GET'
+        });
+
+        const replyAsJson = await reply.json();
+
+        const username = replyAsJson.username;
+
+        
+        var socket = io();
+        $('#messagefield').change( () => {
+            if($('#messagefield').val() == ""){
+                socket.emit('stop typing');
+            }
+            socket.emit('is writing');
+        })
+        $('form').submit(function(e) {
+            e.preventDefault();
+            socket.emit('chat message', {"user": username, "msg": $('#messagefield').val()});
+            socket.emit('stop typing');
+        $('#messagefield').val('');
+        });
+        socket.on('chat message', msg => {
+            $('#messages').append($('<li>').text(msg));
+            $('#messages').animate({scrollTop: $('#messages').height() + 10000}, "slow")
+        });
+        socket.on('user typing', () => {
+            $('#usertyping').removeClass('d-none');
+        });
+        socket.on('stop typing', () => {
+            $('#usertyping').addClass('d-none');
+        })
+    });
+    </script>
 
 </body>
 </html>
