@@ -21,9 +21,15 @@ const cookSchema = new mongoose.Schema( {
         type: Array,
         required: [true, 'no dish without ingredients!']
     },
-    price: {
-        type: Number,
-        default: ''
+    cost: {
+        amount: {
+            type: Number,
+            required: true
+        },
+        currency: {
+            type: String,
+            required: true
+        }
     },
     chefName: {
         type: String,

@@ -53,7 +53,10 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/session', (req, res) => {
-    return res.status(200).send(req.session);
+    return res.status(200).send({
+        "username": req.session.username,
+        "firstname": req.session.firstname,
+        "cookId": req.session.cookId});
 })
 
 module.exports = router;
