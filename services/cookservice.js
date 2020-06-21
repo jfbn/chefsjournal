@@ -3,7 +3,6 @@ const Cook = require('../models/model_cook');
 class CookService {
     static create(cook){
         const newCook = new Cook(cook);
-        console.log(cook);
         return newCook.save();
     }
     static async delete(id){

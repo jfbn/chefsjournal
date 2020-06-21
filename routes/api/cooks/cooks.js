@@ -18,9 +18,17 @@ router.get('/', (req, res) => {
 // find a users cooks
 router.post('/matching', (req, res) => {
     console.log(req.body);
-    CookModel.find(req.body).then( model => {
-        return res.json({model});
-    })
+    try {
+
+        CookModel.find(req.body).then( model => {
+            return res.json({model});
+        }).catch(err => {
+            return res.status(400).json({"response:":"there was an error", "err":err})
+            console.log(err);
+        })
+    } catch (err) {
+        return res.status(400).json({"response": "there was an error", "err": err})
+    }
 })
 
 // find cooks matching the requested name
@@ -36,7 +44,7 @@ router.post('/', async (req, res) => {
     try {
         // get information about user from req.session and attach to the body
         req.body.chefName = req.session.username;
-        const createResult = await CookService.create(req.body);
+        const createResult = await CookService.create(req.body);cle
         return res.status(201).json({ success: createResult });
       } catch (err) {
         // Make sure that this is a validation error and send it back to the caller

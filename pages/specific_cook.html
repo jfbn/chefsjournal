@@ -59,15 +59,20 @@
                         </div>
                     </div>
                 </div>
-                <div id="contentlist">
+                <div id="contentlist" class="text-center">
 
-                    <h3>Dishname</h3>
+                    
+                   
+                    
+                    <h3 id="dishname">Dishname</h3>
+                    <small id="servingsText">for 4 people</small>
                     <h3>Date</h3>
                     <h3>Ingredients</h3>
                     <h3>Difficulty</h3>
                     <h3>Instructions</h3>
                     <h3>Comments</h3>
-                    
+                
+
                 </div>
             </div>
 
@@ -78,31 +83,29 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
-        fetch('http://localhost:8080/api/auth/session', {
-            method: 'GET'
-        }).then( reply => {
-            return reply.json();
-        }).then ( json => {
-            console.log(json);
-            if(json.cookId != undefined) {
-                fetch('http://localhost:8080/api/cooks/matching', {
+        console.log(window.location.href.substring(window.location.href.length - 24));
+        
+        fetch('http://localhost:8080/api/cooks/matching', {
                     method: 'POST',
                     headers: {
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        "_id": json.cookId
+                        "_id": window.location.href.substring(window.location.href.length - 24)
                     })
-                }).then( reply => {
-                    return reply.json();
-                }).then ( json => {
-                    // found a cook with the requested id
-                    console.log(json.model[0]);
-                })
+        }).then( reply => {
+            if(reply.status == 400) {
+                console.log("there was an error");
             } else {
-                console.log("session has no cookid");
+                return reply.json();
             }
-        })
+        }).then ( json => {
+            // found a cook with the requested id
+            document.getElementById('dishname').innerHTML = json.model[0].dishName;
+            console.log(json);
+        });
+    
+        
     </script>
 
 </body>
