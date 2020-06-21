@@ -180,9 +180,9 @@
                 })
             }).then( reply => {
                 return reply.json();
-            }).then ( json => {
-                console.log(json);
-                window.location.href = "http://localhost:8080/cook/" + json._id;
+            }).then ( replyAsJson => {
+                console.log(replyAsJson);
+                window.location.href = "http://localhost:8080/cook/" + replyAsJson._id;
             })
         })
 
