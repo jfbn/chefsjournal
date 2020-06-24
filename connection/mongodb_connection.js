@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { local, remote } = require('../config/dbconfig.json');
-
-const useLocal = false;
+const useLocal = process.env.USELOCAL;
 
 if(useLocal) {
   mongoose.connect(`mongodb://${local.DB_ADRESS}:${local.DB_PORT}/${local.DB_NAME}`, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
@@ -12,7 +11,7 @@ if(useLocal) {
       console.log("connected to local db")
     });
 } else {
-  mongoose.connect(remote.DB_ADRESS, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
+  mongoose.connect(process.env.MONGOURI, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
     if(err){
       console.log(err);
     }      
