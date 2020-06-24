@@ -48,7 +48,8 @@ const pagesRoute = require('./routes/pages/pages');
 app.use('/api/', apiRoute);
 app.use('/', pagesRoute);
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
+console.log("i have the port: " + PORT);
 
 server.listen(PORT);
 

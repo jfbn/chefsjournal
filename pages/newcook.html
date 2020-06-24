@@ -141,7 +141,7 @@
         </div>
     </div>
 
-    <script src="http://localhost:8080/js/getsession.js"></script>
+    <script src="/js/getsession.js"></script>
     <script>
         document.getElementById('saveCookButton').addEventListener('click', async (event) => {
             // TODO: check if necessary input is present
@@ -158,7 +158,7 @@
 
 
             // then -> send request with fetch
-            const result = await fetch('http://localhost:8080/api/cooks/', {
+            const result = await fetch(`${window.location.origin}/api/cooks/`, {
                 method: 'POST',
                 headers: {
                     "Content-type": "application/json"
@@ -182,7 +182,7 @@
             const resultAsJson = await result.json();
             console.log(resultAsJson);
     
-            window.location.href = "http://localhost:8080/cook/" + resultAsJson.success._id;
+            window.location.href = window.location.origin + '/cook/' + resultAsJson.success._id;
 
         })
 

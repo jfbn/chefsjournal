@@ -57,7 +57,7 @@
 </head>
 <body>
     <div id="loginDiv" class="login-form">
-        <img src="http://localhost:8080/img/chefsjournal_logo.png"/>
+        <img src="/img/chefsjournal_logo.png"/>
         <form id="loginForm" action="/api/auth/login" method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -123,7 +123,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     
     <script>
-        fetch('http://localhost:8080/api/auth/session', {
+        fetch(`${window.location.origin}/api/auth/session`, {
             method: 'GET'
         }).then((resp) => {
             return resp.json();
@@ -153,7 +153,7 @@
             // todo
 
             // send post request
-            fetch('http://localhost:8080/api/users', {
+            fetch(`${window.location.origin}/api/users`, {
                 method: 'POST',
                 body: JSON.stringify({"username": username, "firstname": firstname, "password": password, "email": email, "subscribed": subscribed}),
                 headers: {

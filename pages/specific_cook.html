@@ -79,7 +79,7 @@
         </div>
     </div>
 
-    <script src="http://localhost:8080/js/getsession.js"></script>
+    <script src="/js/getsession.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
@@ -88,7 +88,7 @@
             // this page will 
             // if url includes an id (which it will when redirected from having created a new cook)
             if(window.location.href.substring((window.location.href.indexOf('2')) + 1 ) != "" ){
-                fetch('http://localhost:8080/api/cooks/matching', {
+                fetch(`${window.location.origin}/api/cooks/matching`, {
                             method: 'POST',
                             headers: {
                                 "Content-type": "application/json"
@@ -114,7 +114,7 @@
                 console.log($("#dishNameField").val()); 
                 const dishname = $('#dishNameField').val();
                 // find a cook matching the input
-                const cook = await fetch('http://localhost:8080/api/cooks/matching', {
+                const cook = await fetch(`${window.location.origin}/api/cooks/matching`, {
                     method: "POST",
                     headers: {
                         "Content-type": "application/json"
@@ -138,7 +138,7 @@
                     return;    
                 }
                 $('#deleteButton').click( (event) => {
-                    fetch(`http://localhost:8080/api/cooks/${cook._id}`, {
+                    fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
                         method: 'DELETE'
                     }).then( (reply) => {
                         console.log(reply);

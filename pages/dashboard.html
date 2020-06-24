@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/8e5ccff88a.js" crossorigin="anonymous"></script>
-    <title>sdsd</title>
+    <title>Dashboard</title>
     
     <style>
         #contenttab {
@@ -89,7 +89,7 @@
         // TODO: Refactor this into single use functions instead of nasty chaining..
         
         // get information about the session to know about the logged in user
-        fetch('http://localhost:8080/api/auth/session', {
+        fetch(`${window.location.origin}/api/auth/session`, {
             method: 'GET',
         }).then( (res) => {
             return res.json();
@@ -98,7 +98,7 @@
             document.getElementById('greeting').innerHTML = "Welcome, " + session.firstname;
 
             // get all the cooks this user created
-            fetch('http://localhost:8080/api/cooks/matching', {
+            fetch(`${window.location.origin}/api/cooks/matching`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

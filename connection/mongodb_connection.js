@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const { local, remote } = require('../config/dbconfig.json');
-const USELOCAL = process.env.USELOCAL;
+const USELOCAL = process.env.USELOCAL || true;
 
 if(USELOCAL == true) {
   console.log("SHOULD NEVER BE HERE YAAA");
