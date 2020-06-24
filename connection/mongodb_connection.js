@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { local, remote } = require('../config/dbconfig.json');
 const USELOCAL = process.env.USELOCAL;
-console.log("i found this mongodb uri: " + process.env.MONGOURI);
+console.log("i found this mongodb uri: " + process.env.MONGDB_URI);
 
 if(USELOCAL == true) {
   console.log("SHOULD NEVER BE HERE YAAA");
@@ -17,7 +17,7 @@ if(USELOCAL == true) {
       console.log("connected to local db")
     });
 } else {
-  mongoose.connect(process.env.MONGOURI, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
+  mongoose.connect(process.env.MONGDB_URI, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
       if(err){
         console.log("an error occured at line 21 in mongodb connection: " + err);
       }
