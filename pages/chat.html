@@ -99,7 +99,7 @@
             e.preventDefault();
             socket.emit('chat message', {"user": username, "msg": $('#messagefield').val()});
             socket.emit('stop typing');
-        $('#messagefield').val('');
+            $('#messagefield').val('');
         });
         socket.on('chat message', msg => {
             $('#messages').append($('<li>').text(msg));
