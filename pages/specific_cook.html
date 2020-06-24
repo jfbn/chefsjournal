@@ -55,24 +55,24 @@
                     <div class="col-sm-7">
                         <div class="input-group">
                             <input id="dishNameField" type="text" class="form-control" placeholder="Strawberry cheesecake" required>
-                            <span class="input-group-addon"><button class="btn btn-primary">Fetch</button></span>
+                            <span class="input-group-addon"><button class="btn btn-primary" id="findcook">Fetch</button></span>
                         </div>
                     </div>
                 </div>
-                <div id="contentlist" class="text-center">
-
-                    
-                   
+                <div id="contentlist">
                     
                     <h3 id="dishname">Dishname</h3>
-                    <small id="servingsText">for 4 people</small>
-                    <h3>Date</h3>
+                    <small id="servingsText" style="padding-bottom: 25px;">for 4 people.</small>
+                    <small id="lastcook"></small>
                     <h3>Ingredients</h3>
-                    <h3>Difficulty</h3>
+                    <ul id="ingredients">
+                    </ul>
                     <h3>Instructions</h3>
+                    <textarea class="form-control" id="instructions" rows="3" readonly></textarea>
                     <h3>Comments</h3>
+                    <textarea class="form-control" id="comments" rows="3" readonly></textarea>
                 
-
+                    <button id="deleteButton" class="btn btn-danger float-right" style="margin-top: 5px;">Delete cook</button>
                 </div>
             </div>
 
@@ -83,29 +83,85 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
-        console.log(window.location.href.substring(window.location.href.length - 24));
-        
-        fetch('http://localhost:8080/api/cooks/matching', {
-                    method: 'POST',
+        $(document).ready( () => {
+
+            // this page will 
+            // if url includes an id (which it will when redirected from having created a new cook)
+            if(window.location.href.substring((window.location.href.indexOf('2')) + 1 ) != "" ){
+                fetch('http://localhost:8080/api/cooks/matching', {
+                            method: 'POST',
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                "_id": window.location.href.substring((window.location.href.indexOf('k') + 2))
+                            })
+                }).catch( err => {
+                    console.log("there was an error");
+                    console.log(err);
+                }).then( reply => {
+                    return reply.json();
+                }).then ( json => {
+                    console.log(json);
+                    // found a cook with the requested id
+                    if(json != null && json.model.length > 0) {
+                        populatePage(json.model[0]);
+                    } 
+                });
+            }
+    
+            $('#findcook').click( async (event) => {
+                console.log($("#dishNameField").val()); 
+                const dishname = $('#dishNameField').val();
+                // find a cook matching the input
+                const cook = await fetch('http://localhost:8080/api/cooks/matching', {
+                    method: "POST",
                     headers: {
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        "_id": window.location.href.substring(window.location.href.length - 24)
+                        "dishName": dishname
                     })
-        }).then( reply => {
-            if(reply.status == 400) {
-                console.log("there was an error");
-            } else {
-                return reply.json();
-            }
-        }).then ( json => {
-            // found a cook with the requested id
-            document.getElementById('dishname').innerHTML = json.model[0].dishName;
-            console.log(json);
-        });
+                });
     
-        
+                const cookAsJson = await cook.json();
+                console.log(cookAsJson);
+                console.log(cookAsJson.model[0]);
+                populatePage(cookAsJson.model[0]);
+            });
+    
+            populatePage = (cook) => {
+                if(!cook) {
+                    // un bind in case there are previously bound click listeners
+                    $('#deleteButton').off('click');
+                    alert("no results!");
+                    return;    
+                }
+                $('#deleteButton').click( (event) => {
+                    fetch(`http://localhost:8080/api/cooks/${cook._id}`, {
+                        method: 'DELETE'
+                    }).then( (reply) => {
+                        console.log(reply);
+                        return reply.json();
+                    }).then( (replyAsJson) => {
+                        console.log(replyAsJson);
+                    })
+                })
+                
+                $('#ingredients').empty();
+                cook.ingredients.forEach(ingredient => {
+                    $('#ingredients').append(`<li>${ingredient}</li>`);
+                });
+                $('#servingsText').text(`A ${cook.difficulty.toLowerCase()} dish cooked for ${cook.amountOfEaters} people`)
+                $('#lastcook').text(`Cook uploaded on ${new Date(cook.date).toDateString()}`)
+                $('#dishname').text(`${cook.dishName} for ${cook.cost.amount}${cook.cost.currency} in ${cook.duration} minutes`)
+                $('#comments').text(`${cook.comments}`);
+
+                document.getElementById('comments').innerHTML = cook.comments;
+                document.getElementById('instructions').innerHTML = cook.instructions;
+            }
+        })
+
     </script>
 
 </body>

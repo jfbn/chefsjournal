@@ -18,17 +18,13 @@ router.get('/', (req, res) => {
 // find a users cooks
 router.post('/matching', (req, res) => {
     console.log(req.body);
-    try {
-
-        CookModel.find(req.body).then( model => {
-            return res.json({model});
-        }).catch(err => {
-            return res.status(400).json({"response:":"there was an error", "err":err})
-            console.log(err);
-        })
-    } catch (err) {
-        return res.status(400).json({"response": "there was an error", "err": err})
-    }
+    CookModel.find(req.body).then( model => {
+        console.log(model);
+        return res.json({model});
+    }).catch(err => {
+        return res.status(400).json({"response:":"there was an error", "err":err})
+    });
+    
 })
 
 // find cooks matching the requested name
@@ -40,11 +36,11 @@ router.get('/:name', (req, res) => {
 
 // save a new cook document to mongodb
 router.post('/', async (req, res) => {
-    console.log("got cook post request with body: " + req.body)
     try {
         // get information about user from req.session and attach to the body
         req.body.chefName = req.session.username;
-        const createResult = await CookService.create(req.body);cle
+        const createResult = await CookService.create(req.body);
+        console.log(createResult);
         return res.status(201).json({ success: createResult });
       } catch (err) {
         // Make sure that this is a validation error and send it back to the caller
