@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { local, remote } = require('../config/dbconfig.json');
 const USELOCAL = process.env.USELOCAL;
+console.log("i found this mongodb uri: " + process.env.MONGOURI);
 
 if(USELOCAL == true) {
   console.log("SHOULD NEVER BE HERE YAAA");
