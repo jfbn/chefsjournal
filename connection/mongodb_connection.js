@@ -3,7 +3,6 @@ const { local, remote } = require('../config/dbconfig.json');
 const USELOCAL = process.env.USELOCAL || true;
 
 if(USELOCAL == true) {
-  console.log("SHOULD NEVER BE HERE YAAA");
   mongoose.connect(`mongodb://${local.DB_ADRESS}:${local.DB_PORT}/${local.DB_NAME}`, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
       if(err){
         console.log("error: " + err);

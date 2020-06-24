@@ -84,10 +84,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
         $(document).ready( () => {
-
+            console.log(window.location.href);
+            console.log(window.location.href.substring((window.location.href.indexOf('k')) + 2 ));
             // this page will 
             // if url includes an id (which it will when redirected from having created a new cook)
-            if(window.location.href.substring((window.location.href.indexOf('2')) + 1 ) != "" ){
+            if(window.location.href.substring((window.location.href.indexOf('k')) + 2 ) !== "" ){
                 fetch(`${window.location.origin}/api/cooks/matching`, {
                             method: 'POST',
                             headers: {
