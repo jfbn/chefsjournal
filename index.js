@@ -26,6 +26,9 @@ io.on('connection', (socket) => {
 
 })
 
+// setup view engine to ejs
+app.set('view engine', 'ejs');
+
 // setup body parsing to convert js objects into proper json
 app.use(bodyParser.json());
 // url encoded to read html form data

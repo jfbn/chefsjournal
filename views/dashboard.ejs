@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/8e5ccff88a.js" crossorigin="anonymous"></script>
+    <title>Dashboard</title>
+    
+    <style>
+        #contenttab {
+            padding: 12px;
+        }
+        #menutab {
+            padding: 12px;
+        }
+
+        li.active a{
+            color: #FFFFFF;
+        }
+        #contentlist a {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark  bg-dark">
+        <a class="navbar-brand" href="#">Chefs Journal // A KEA Node.js exam project</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        </div>
+    </nav>
+    <div class="container" style="margin-top: 125px">
+        <div class="row">
+
+            <div class="col-sm-4" id="menutab">
+                <h2 id="greeting">Welcome, anon</h2>
+                <br>
+                <ul class="list-group">
+                    <li class="list-group-item active"><a href="#">Profile</a></li>
+                    <li class="list-group-item"><a href="/newcook">New cook</a></li>
+                    <li class="list-group-item"><a href="/cook">Specific cook</a></li>
+                    <li class="list-group-item"><a href="/mystats">Stats</a></li>
+                    <li class="list-group-item"><a href="/chat">Chatroom</a></li>
+                    <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-8" id="contenttab">
+                <h2>Your recent cooks</h2>
+                <br>
+                <div id="contentlist">
+                </div>
+            </div>
+
+            <!-- MODAL FOR DISPLAYING INFORMATION ABOUT A SPECIFIC COOK -->
+            <div class="modal" id="cookModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitle">You should never see this</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    <div class="modal-body">
+                        <h4 id="modalPrice"></h4>
+                        <h4 id="modalAmountOfEaters"></h4>
+                        <h4 id="modalDifficulty"></h4>
+                        <h4 id="modalDuration"></h4>
+                        <h4 id="modalIngredients"></h4>
+
+                    </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+
+        // TODO: Refactor this into single use functions instead of nasty chaining..
+        
+        // get information about the session to know about the logged in user
+        fetch(`${window.location.origin}/api/auth/session`, {
+            method: 'GET',
+        }).then( (res) => {
+            return res.json();
+        }).then( (session) => {
+            let expressSession = session;
+            document.getElementById('greeting').innerHTML = "Welcome, " + session.firstname;
+
+            // get all the cooks this user created
+            fetch(`${window.location.origin}/api/cooks/matching`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"chefName": expressSession.username})
+            }).then(reply => {
+                return reply.json();
+            }).then(json => {
+
+                const contentlist = document.getElementById('contentlist');
+
+                json.model.forEach(element => {
+
+                    // for each cook the logged in user has created
+                    let newEntry = document.createElement('a');
+                    newEntry.cookId = element._id;
+                    newEntry.setAttribute("data-toggle", "modal");
+                    newEntry.setAttribute("data-target", "cookModal");
+                    newEntry.innerHTML = `
+                    <div class="row" data-toggle="modal" data-target="#cookModal">
+                        <div class="col-sm-4">
+                            <div class="card-body">
+                                ${element.dishName} for ${element.amountOfEaters} people
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="card-body float-right"><p><span><i class="far fa-clock"></i></span> ${element.duration}</p><p><span><i class="fas fa-calendar-day" style="padding: 5px"></i></span>${new Date(element.date).getDate()} / ${new Date(element.date).getMonth()}</p></div>
+                        </div>
+                    </div>`
+                    newEntry.className += "card"
+                                    
+                    newEntry.addEventListener('click', (event) => {
+                        populateModal(element);
+                    });
+                    for(let property in element) {
+                        newEntry.setAttribute(property, element[property]);
+                    }
+                    contentlist.append(newEntry)
+                });
+            });
+                            
+        })
+
+        populateModal =  function(cookElement){
+            document.getElementById('modalTitle').innerHTML = cookElement.dishName;
+            document.getElementById('modalAmountOfEaters').innerHTML = "Servings: " + cookElement.amountOfEaters;
+            document.getElementById('modalDuration').innerHTML = "Cooking time: " + cookElement.duration + " minutes";
+            document.getElementById('modalPrice').innerHTML = "Cost: " + cookElement.price;
+            document.getElementById('modalDifficulty').innerHTML = "Difficulty: " + cookElement.difficulty
+        }
+
+        
+    </script>
+</body>
+</html>
