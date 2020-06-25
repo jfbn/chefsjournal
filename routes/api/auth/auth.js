@@ -30,6 +30,7 @@ router.post('/login', (req, res) =>{
                             req.session.username = username.toLowerCase();
                             req.session.firstname = model.username.toLowerCase();
                             req.session.wrongpassword = 0;
+                            console.log(username +" logged in");
                             return res.redirect('/');
                         } else {
                             req.session.wrongpassword += 1; 

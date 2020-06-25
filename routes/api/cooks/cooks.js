@@ -17,9 +17,7 @@ router.get('/', (req, res) => {
 
 // find a users cooks
 router.post('/matching', (req, res) => {
-    console.log(req.body);
     CookModel.find(req.body).then( model => {
-        console.log(model);
         return res.json({model});
     }).catch(err => {
         return res.status(400).json({"response:":"there was an error", "err":err})
