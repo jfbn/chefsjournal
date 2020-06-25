@@ -28,7 +28,7 @@ router.post('/login', (req, res) =>{
                     bcrypt.compare(password, model.hash, (err, result) => {
                         if(result){
                             req.session.username = username.toLowerCase();
-                            req.session.firstname = model.username.toLowerCase();
+                            req.session.firstname = model.firstname.toLowerCase();
                             req.session.wrongpassword = 0;
                             console.log(username +" logged in");
                             return res.redirect('/');
@@ -57,7 +57,7 @@ router.get('/session', (req, res) => {
     return res.status(200).send({
         "username": req.session.username,
         "firstname": req.session.firstname,
-        "cookId": req.session.cookId});
+        "wrongpassword": req.session.wrongpassword});
 })
 
 module.exports = router;

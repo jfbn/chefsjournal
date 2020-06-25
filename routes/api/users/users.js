@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/currentuser', (req, res) => {
-    console.log("dd")
     if(req.session.username != undefined) {
         return res.json(req.session.username);
     }
