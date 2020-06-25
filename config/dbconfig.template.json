@@ -1,0 +1,10 @@
+{
+    "local": {
+        "DB_ADRESS": "localhost",
+        "DB_NAME:": "your db name",
+        "DB_PORT": the port of your db
+    },
+    "remote": {
+        "DB_ADRESS": ""
+    }
+}

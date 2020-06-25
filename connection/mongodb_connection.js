@@ -1,30 +1,24 @@
 const mongoose = require('mongoose');
-const { local, remote } = require('../config/dbconfig.json');
-const USELOCAL = process.env.USELOCAL || true;
+const { local: localConfig, remote: remoteConfig } = require('../config/dbconfig.json');
+const USELOCAL = process.env.USELOCAL || false;
+const REMOTEADRESS = process.env.MONGODB_URI || remoteConfig.DB_ADRESS;
 
 if(USELOCAL == true) {
-  mongoose.connect(`mongodb://${local.DB_ADRESS}:${local.DB_PORT}/${local.DB_NAME}`, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
-      if(err){
-        console.log("error: " + err);
-      }      
-    }).catch(err => {
-      console.log("there was an error connecting to local db");
-      console.log("the error:");
-      console.log(err);
-    }).then( () => {
+  mongoose.connect(`mongodb://${localConfig.DB_ADRESS}:${localConfig.DB_PORT}/${localConfig.DB_NAME}`, {useNewUrlParser: true, useUnifiedTopology: true})
+  .then( () => {
       console.log("connected to local db")
+    }, (err) => {
+      console.log("failed to connect to local db");
+      console.log(err);
     });
 } else {
-  mongoose.connect(process.env.MONGDB_URI, {useNewUrlParser: true, useUnifiedTopology: true}, err => {
-      if(err){
-        console.log("an error occured in mongodb connection: " + err);
-      }
-    }).catch(err => {
-      console.log("there was an error connecting to remote db");
-      console.log("the error:");
-      console.log(err);      
-    }).then( () => {
-      console.log("connected to remote db")
-    });
+  mongoose.connect(REMOTEADRESS, {useNewUrlParser: true, useUnifiedTopology: true, serverSelectionTimeoutMS: 2000})
+  .then(() => {
+    console.log("connected to remote db")
+  }, 
+    (err) => {
+      console.log("failed to connect to remote db");
+      console.log(err);
+  });
 }
 

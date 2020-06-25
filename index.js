@@ -26,8 +26,9 @@ io.on('connection', (socket) => {
 
 })
 
-// setup body parsing
+// setup body parsing to convert js objects into proper json
 app.use(bodyParser.json());
+// url encoded to read html form data
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // server static files
@@ -38,6 +39,7 @@ app.use(session({
     secret: config.sessionSecret,
     resave: false,
     saveUninitialized: true,
+    // store is a mongodb collection that keeps track of sessions
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }))
 
@@ -49,7 +51,8 @@ app.use('/api/', apiRoute);
 app.use('/', pagesRoute);
 
 const PORT = process.env.PORT || 3000;
-console.log("i have the port: " + PORT);
 
-server.listen(PORT);
+server.listen(PORT, () => {
+    console.log("Express is ready at port " + PORT);
+});
 
