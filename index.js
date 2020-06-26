@@ -8,6 +8,7 @@ const config = require('./config/sessionconfig.json')
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 
 // prepare for sockets
 io.on('connection', (socket) => {
@@ -42,6 +43,15 @@ app.use(session({
     // store is a mongodb collection that keeps track of sessions
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }))
+
+// rate limiter to prevent being run over
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 8
+});
+app.use('/auth/login', limiter);
+app.use('/auth/signup', limiter);
+// TODO !!!!!!!!
 
 // load routes
 const apiRoute = require('./routes/api/api');
