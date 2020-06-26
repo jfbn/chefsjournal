@@ -34,14 +34,14 @@
         <div class="row">
 
             <div class="col-sm-4" id="menutab">
-                <h2 id="greeting">Welcome, anon</h2>
+                <h2 id="greeting">Welcome</h2>
                 <br>
                 <ul class="list-group">
-                    <li class="list-group-item"><a href="/">Profile</a></li>
-                    <li class="list-group-item active"><a href="#">New cook</a></li>
-                    <li class="list-group-item"><a href="/cook">Specific cook</a></li>
-                    <li class="list-group-item"><a href="/mystats">Stats</a></li>
+                    <li class="list-group-item "><a href="/">Feed</a></li>
+                    <li class="list-group-item active"><a href="/newcook">New cook</a></li>
+                    <li class="list-group-item"><a href="/cook">Search for cooks</a></li>
                     <li class="list-group-item"><a href="/chat">Chatroom</a></li>
+                    <li class="list-group-item"><a href="/profile">Profile</a></li>
                     <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
                 </ul>
             </div>
@@ -59,7 +59,7 @@
 
                         <div class="form-group">
                             <label for="dateField" class="col-form-label">Date of cooking</label>
-                            <input class="form-control" type="date" value="2020-04-20" id="dateField">
+                            <input class="form-control" type="date" val()="2020-04-20" id="dateField">
                         </div>
 
                         <div class="form-group">
@@ -141,20 +141,21 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="/js/getsession.js"></script>
     <script>
-        document.getElementById('saveCookButton').addEventListener('click', async (event) => {
+        $('#saveCookButton').click(async (event) => {
             // TODO: check if necessary input is present
-            const dishName = document.getElementById('dishNameField').value;
-            const dishDate = document.getElementById('dateField').value;
-            const ingredients = document.getElementById('ingredientsField').value;
-            const duration = document.getElementById('durationField').value;
-            const servings = document.getElementById('amountOfEaters').value;
-            const cost = document.getElementById('costField').value;
-            const currency = document.getElementById('currencySelect').value;
-            const difficulty = document.getElementById('difficultySelect').value;
-            const instructions = document.getElementById('instructionsField').value;
-            const comments = document.getElementById('commentsField').value;
+            const dishName = $('#dishNameField').val();
+            const dishDate = $('#dateField').val();
+            const ingredients = $('#ingredientsField').val();
+            const duration = $('#durationField').val();
+            const servings = $('#amountOfEaters').val();
+            const cost = $('#costField').val();
+            const currency = $('#currencySelect').val();
+            const difficulty = $('#difficultySelect').val();
+            const instructions = $('#instructionsField').val();
+            const comments = $('#commentsField').val();
 
 
             // then -> send request with fetch
@@ -181,8 +182,11 @@
             });
             const resultAsJson = await result.json();
             console.log(resultAsJson);
-    
-            window.location.href = window.location.origin + '/cook/' + resultAsJson.success._id;
+            if(resultAsJson.success) {
+                window.location.href = window.location.origin + '/cook/' + resultAsJson.success._id;
+            } else {
+                alert("there was an error: " + resultAsJson.error);
+            }
 
         })
 

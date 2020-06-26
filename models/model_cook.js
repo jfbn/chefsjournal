@@ -4,6 +4,8 @@ const cookSchema = new mongoose.Schema( {
     dishName: {
         type: String,
         default: "err: no dish name",
+        lowercase: true,
+        trim: true,
         min: [2, "No dish with less than 2 letters!"],
         validate: {
             validator: (v) => {
@@ -34,6 +36,8 @@ const cookSchema = new mongoose.Schema( {
     chefName: {
         type: String,
         required: [true, 'food doesnt cook itself'],
+        lowercase: true,
+        trim: true,
         minlength: 2,
         maxlength: 25
     },
