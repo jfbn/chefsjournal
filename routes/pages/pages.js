@@ -42,12 +42,19 @@ router.get('/chat', (req, res) => {
 
 router.get('/newcook', (req, res) => {
 
-    if(req.session.username == undefined) {
+    if(req.session.username === undefined) {
         console.log(req.session);
         return res.redirect('/');
     }
     return res.sendFile(pagesDir + '/newcook.html');
+})
 
+router.get('/profile', (req, res) => {
+    if(req.session.username === undefined) {
+        return res.redirect('/');
+    } else {
+        return res.sendFile(pagesDir + '/profile.html');
+    }
 })
 
 

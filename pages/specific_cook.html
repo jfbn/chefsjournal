@@ -59,21 +59,21 @@
                         </div>
                     </div>
                 </div>
-                <ul class="list-group d-none" id="resultlist">
+                <ul class="d-none" id="resultlist">
 
                 </ul>
                 <div id="contentlist" class="d-none">
 
                     
-                    <h3 id="dishname">Dishname</h3>
+                    <h4 id="dishname">Dishname</h4>
                     <small id="servingsText" style="padding-bottom: 25px;">for 4 people.</small>
                     <small id="lastcook"></small>
-                    <h3>Ingredients</h3>
-                    <ul id="ingredients">
+                    <h4>You need</h4>
+                    <ul class="list-group" id="ingredients">
                     </ul>
-                    <h3>Instructions</h3>
+                    <h4>Instructions</h4>
                     <textarea class="form-control" id="instructions" rows="3" readonly></textarea>
-                    <h3>Comments</h3>
+                    <h4>Comments</h4>
                     <textarea class="form-control" id="comments" rows="3" readonly></textarea>
                 
                     <button id="deleteButton" class="btn btn-danger float-right" style="margin-top: 5px;">Delete cook</button>
@@ -96,28 +96,25 @@
                     alert("no results!");
                     return;    
                 }
-                $('#deleteButton').click( (event) => {
-                    fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
+                $('#deleteButton').click( async (event) => {
+                    const reply = await fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
                         method: 'DELETE'
-                    }).then( (reply) => {
-                        console.log(reply);
-                        return reply.json();
-                    }).then( (replyAsJson) => {
-                        console.log(replyAsJson);
                     })
-                })
+                    const replyAsJson = await reply.json();
+                    console.log(replyAsJson);
+                });
                 
                 $('#ingredients').empty();
                 cook.ingredients.forEach(ingredient => {
-                    $('#ingredients').append(`<li>${ingredient}</li>`);
+                    $('#ingredients').append(`<li class="list-group-item">${ingredient}</li>`);
                 });
                 $('#servingsText').text(`A ${cook.difficulty.toLowerCase()} dish cooked for ${cook.amountOfEaters} people`)
                 $('#lastcook').text(`Cook uploaded on ${new Date(cook.date).toDateString()}`)
                 $('#dishname').text(`${cook.dishName} for ${cook.cost.amount}${cook.cost.currency} in ${cook.duration} minutes`)
                 $('#comments').text(`${cook.comments}`);
 
-                document.getElementById('comments').innerHTML = cook.comments;
-                document.getElementById('instructions').innerHTML = cook.instructions;
+                $('#comments').innerHTML = cook.comments;
+                $('#instructions').innerHTML = cook.instructions;
                 $('#contentlist').removeClass('d-none');
             }
             // if url includes an id (which it will when redirected from having created a new cook)
