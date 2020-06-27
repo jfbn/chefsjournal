@@ -28,7 +28,7 @@ router.post('/login', (req, res) =>{
                     bcrypt.compare(password, model.hash, (err, result) => {
                         if(result){
                             req.session.username = username.toLowerCase();
-                            req.session.firstname = model.firstname.toLowerCase();
+                            req.session.firstname = model.firstname;
                             req.session.wrongpassword = 0;
                             console.log(username +" logged in");
                             return res.redirect('/');

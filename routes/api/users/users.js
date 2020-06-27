@@ -30,11 +30,14 @@ router.post('/', (req, res) => {
     const { username, password, firstname, email } = req.body;
 
     if (username && password && firstname && email) {
+
+        // format input to our liking
+        firstnameFormated = (firstname.charAt(0) + "" ).toUpperCase() + firstname.substring(1).toLowerCase();
         
         bcrypt.hash(password, saltRounds, async function(err, hash) {
             // Store hash in your password DB.            
             try {
-                const createResult = await UserService.create({"username": username.toLowerCase(), "hash": hash, "firstname": firstname.toLowerCase(), "email": email});
+                const createResult = await UserService.create({"username": username.toLowerCase(), "hash": hash, "firstname": firstnameFormated, "email": email});
                 return res.status(201).json({ success: createResult });
               } catch (err) {
                 // Make sure that this is a validation error and send it back to the caller
