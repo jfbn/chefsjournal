@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-// server for socket based chat
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const bodyParser = require('body-parser');
@@ -46,14 +45,23 @@ app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection }),
 }))
 
+// Enable if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
+// see https://expressjs.com/en/guide/behind-proxies.html
+app.set('trust proxy', 1);
+
 // rate limiter to prevent being run over
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 8
+const ApiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    // 100 requests each 15 minute
+    max: 100
 });
-app.use('/auth/login', limiter);
-app.use('/auth/signup', limiter);
-// TODO !!!!!!!!
+const AuthLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    // 8 requests each 15 minutes
+    max: 8
+});
+app.use('/api/', ApiLimiter);
+app.use('/auth/', AuthLimiter);
 
 // load routes
 const apiRoute = require('./routes/api/api');

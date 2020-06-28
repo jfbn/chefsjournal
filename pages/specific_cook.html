@@ -83,11 +83,14 @@
         </div>
     </div>
 
-    <script src="/js/getsession.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
         $(document).ready( async () => {
+
+            const reply = await fetch(`${window.location.origin}/api/auth/session`, {
+            type: 'GET'
+            });
 
             const populatePage = (cook) => {
                 if(!cook) {

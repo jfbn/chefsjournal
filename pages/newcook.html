@@ -147,54 +147,63 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
-    <script src="/js/getsession.js"></script>
     <script>
-        $('#saveCookButton').click(async (event) => {
-            event.preventDefault();
-            console.log("clicked");
-            // TODO: check if necessary input is present
-            const dishName = $('#dishNameField').val();
-            const dishDate = $('#dateField').val();
-            const ingredients = $('#ingredientsField').val();
-            const duration = $('#durationField').val();
-            const servings = $('#amountOfEaters').val();
-            const cost = $('#costField').val();
-            const currency = $('#currencySelect').val();
-            const difficulty = $('#difficultySelect').val();
-            const instructions = $('#instructionsField').val();
-            const comments = $('#commentsField').val();
-
-
-            // then -> send request with fetch
-            const result = await fetch(`${window.location.origin}/api/cooks/`, {
-                method: 'POST',
-                headers: {
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify({
-                    "dishName": dishName,
-                    "date": dishDate,
-                    "ingredients": ingredients.split(", "),
-                    "duration": duration,
-                    "amountOfEaters": servings,
-                    "cost": {
-                        "amount": cost,
-                        "currency": currency
-                    },
-                    "difficulty": difficulty,
-                    "instructions": instructions,
-                    "comments": comments,
-
-                })
+        $(document).ready( async () => {
+        
+            const reply = await fetch(`${window.location.origin}/api/auth/session`, {
+                type: 'GET'
             });
-            const resultAsJson = await result.json();
-            console.log(resultAsJson);
-            if(resultAsJson.success) {
-                window.location.href = window.location.origin + '/cook/' + resultAsJson.success._id;
-            } else {
-                alert("there was an error: " + resultAsJson.error);
-            }
-
+    
+            const replyAsJson = await reply.json();
+            document.getElementById('greeting').innerHTML = "Welcome, " + replyAsJson.firstname;
+            
+            $('#saveCookButton').click(async (event) => {
+                event.preventDefault();
+                console.log("clicked");
+                // TODO: check if necessary input is present
+                const dishName = $('#dishNameField').val();
+                const dishDate = $('#dateField').val();
+                const ingredients = $('#ingredientsField').val();
+                const duration = $('#durationField').val();
+                const servings = $('#amountOfEaters').val();
+                const cost = $('#costField').val();
+                const currency = $('#currencySelect').val();
+                const difficulty = $('#difficultySelect').val();
+                const instructions = $('#instructionsField').val();
+                const comments = $('#commentsField').val();
+    
+    
+                // then -> send request with fetch
+                const result = await fetch(`${window.location.origin}/api/cooks/`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "dishName": dishName,
+                        "date": dishDate,
+                        "ingredients": ingredients.split(", "),
+                        "duration": duration,
+                        "amountOfEaters": servings,
+                        "cost": {
+                            "amount": cost,
+                            "currency": currency
+                        },
+                        "difficulty": difficulty,
+                        "instructions": instructions,
+                        "comments": comments,
+    
+                    })
+                });
+                const resultAsJson = await result.json();
+                console.log(resultAsJson);
+                if(resultAsJson.success) {
+                    window.location.href = window.location.origin + '/cook/' + resultAsJson.success._id;
+                } else {
+                    alert("there was an error: " + resultAsJson.error);
+                }
+    
+            })
         })
 
     </script>
