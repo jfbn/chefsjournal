@@ -101,7 +101,6 @@
                         method: 'DELETE'
                     })
                     const replyAsJson = await reply.json();
-                    console.log(replyAsJson);
                 });
                 
                 $('#ingredients').empty();
@@ -155,7 +154,6 @@
                     $('#resultlist').removeClass('d-none');
 
                     resultAsJson.model.forEach(cook => {
-                        console.log("hi");
                         $('#resultlist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)
                     });
                 } else {

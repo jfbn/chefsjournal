@@ -21,7 +21,6 @@ router.post('/login', (req, res) =>{
         UserModel.findOne({"username": username.toLowerCase()})
             .then( model => {
                 if(model == null) {
-                    console.log("no user");
                     return res.redirect('/');
                 }
                 try {
@@ -42,7 +41,7 @@ router.post('/login', (req, res) =>{
                 }
             })
     } else {
-        return res.status(406).send('i need a username and a password to login');
+        return res.status(406).send('the post should be ');
     }
 
 })

@@ -150,6 +150,8 @@
     <script src="/js/getsession.js"></script>
     <script>
         $('#saveCookButton').click(async (event) => {
+            event.preventDefault();
+            console.log("clicked");
             // TODO: check if necessary input is present
             const dishName = $('#dishNameField').val();
             const dishDate = $('#dateField').val();

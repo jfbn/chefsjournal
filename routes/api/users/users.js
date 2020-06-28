@@ -12,7 +12,7 @@ const saltRounds = 8;
 const UserModel = require('../../../models/model_user');
 
 router.get('/', async (req, res) => {
-    UserModel.find({}).then(model => {
+    UserModel.find({}, {hash: 0}).then(model => {
         return res.json(model);
     })
 })
@@ -27,9 +27,9 @@ router.get('/currentuser', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-    const { username, password, firstname, email } = req.body;
+    const { username, password, firstname, email, subscribed} = req.body;
 
-    if (username && password && firstname && email) {
+    if (username && password && firstname && email && subscribed) {
 
         // format input to our liking
         firstnameFormated = (firstname.charAt(0) + "" ).toUpperCase() + firstname.substring(1).toLowerCase();
@@ -37,7 +37,7 @@ router.post('/', (req, res) => {
         bcrypt.hash(password, saltRounds, async function(err, hash) {
             // Store hash in your password DB.            
             try {
-                const createResult = await UserService.create({"username": username.toLowerCase(), "hash": hash, "firstname": firstnameFormated, "email": email});
+                const createResult = await UserService.create({"username": username.toLowerCase(), "hash": hash, "firstname": firstnameFormated, "email": email, "subscribed": subscribed});
                 return res.status(201).json({ success: createResult });
               } catch (err) {
                 // Make sure that this is a validation error and send it back to the caller
@@ -49,7 +49,7 @@ router.post('/', (req, res) => {
               }
         });
     } else {
-        return res.status(400).json({response: "username, password, or firstname is missing"})
+        return res.status(400).json({response: "there was an error", error: "you need to supply a username, password, and firstname to signup"});
     }
 
 })

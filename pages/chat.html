@@ -22,8 +22,15 @@
         }
         #messages {
             height: 355px;
-            background: aqua;
+            background: #F5F5F5;
             overflow: auto;
+        }
+        #contentlist li.selfsent{
+            background-color: greenyellow;
+            margin-bottom: 5px;
+        }#contentlist li.received{
+            background-color: pink;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -102,7 +109,12 @@
             $('#messagefield').val('');
         });
         socket.on('chat message', msg => {
-            $('#messages').append($('<li>').text(msg));
+            console.log(msg.username);
+            if(msg.username === username) {
+                $('#messages').append($('<li class="selfsent">').text(msg));
+            } else {
+                $('#messages').append($('<li class="received">').text(msg));
+            }
             $('#messages').animate({scrollTop: $('#messages').height() + 10000}, "slow")
         });
         socket.on('user typing', () => {
