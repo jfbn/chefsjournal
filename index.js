@@ -14,14 +14,16 @@ const rateLimit = require('express-rate-limit');
 io.on('connection', (socket) => {
 
     socket.on('chat message', msgobject => {
-        io.emit('chat message', msgobject.user + ": " + msgobject.msg);
+        io.emit('chat message', msgobject);
     });
 
     socket.on('is writing', () => {
+        console.log("someone is typing");
         socket.broadcast.emit('user typing');
     })
 
     socket.on('stop typing', () => {
+        console.log("someone stopped typing");
         io.emit('stop typing');
     })
 

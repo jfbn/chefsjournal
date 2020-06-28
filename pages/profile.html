@@ -101,8 +101,8 @@
                                             </div>
                                             <div class="userData ml-3">
                                                 <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold; color: #007bff">Johan Nærby</h2>
-                                                <h6 class="d-block"><a href="javascript:void(0)">1,500</a> Cook Uploads</h6>
-                                                <h6 class="d-block"><a href="javascript:void(0)">300</a> Cook comments</h6>
+                                                <h6 class="d-block"><a href="javascript:void(0)" id="uploadcount">1,500</a> Cook Uploads</h6>
+                                                <h6 class="d-block"><a href="javascript:void(0)">11</a> Cook comments</h6>
                                             </div>
                                             <div class="ml-auto">
                                                 <input type="button" class="btn btn-primary d-none" id="btnDiscard" value="Discard Changes" />
@@ -128,7 +128,7 @@
                                                         <div class="col-sm-3 col-md-2 col-5">
                                                             <label style="font-weight:bold;">Full Name</label>
                                                         </div>
-                                                        <div class="col-md-8 col-6">
+                                                        <div class="col-md-8 col-6" id="fullnamefield">
                                                             Jamshaid Kamran
                                                         </div>
                                                     </div>
@@ -136,9 +136,9 @@
             
                                                     <div class="row">
                                                         <div class="col-sm-3 col-md-2 col-5">
-                                                            <label style="font-weight:bold;">Birth Date</label>
+                                                            <label style="font-weight:bold;">Signup date</label>
                                                         </div>
-                                                        <div class="col-md-8 col-6">
+                                                        <div class="col-md-8 col-6" id="signupdatefield">
                                                             March 22, 1994.
                                                         </div>
                                                     </div>
@@ -147,27 +147,9 @@
                                                     
                                                     <div class="row">
                                                         <div class="col-sm-3 col-md-2 col-5">
-                                                            <label style="font-weight:bold;">Something</label>
+                                                            <label style="font-weight:bold;">Email</label>
                                                         </div>
-                                                        <div class="col-md-8 col-6">
-                                                            Something
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row">
-                                                        <div class="col-sm-3 col-md-2 col-5">
-                                                            <label style="font-weight:bold;">Something</label>
-                                                        </div>
-                                                        <div class="col-md-8 col-6">
-                                                            Something
-                                                        </div>
-                                                    </div>
-                                                    <hr />
-                                                    <div class="row">
-                                                        <div class="col-sm-3 col-md-2 col-5">
-                                                            <label style="font-weight:bold;">Something</label>
-                                                        </div>
-                                                        <div class="col-md-8 col-6">
+                                                        <div class="col-md-8 col-6" id="emailfield">
                                                             Something
                                                         </div>
                                                     </div>
@@ -220,10 +202,15 @@
                 cooksAsJson.model.forEach(cook => {
                     $('#cooklist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)
                 });
+                $('#uploadcount').text(cooksAsJson.model.length);
                 $('#cooklist').removeClass('d-none');
             }
 
-            const profileData = await fetch(window.location.origin + '/api')
+            const profileData = await fetch(window.location.origin + '/api/users/currentuser');
+            const profileDataAsJson = await profileData.json();
+            $('#fullnamefield').text(profileDataAsJson[0].firstname);
+            $('#emailfield').text(profileDataAsJson[0].email || "no email");
+            $('#signupdatefield').text(new Date(profileDataAsJson[0].signupdate).toDateString());
 
             $('#cooklist').scroll( () => {
                 if($('#cooklist').scrollTop() > 0 ){

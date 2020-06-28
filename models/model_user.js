@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
     subscribed: {
         type: Boolean,
         default: false
+    },
+    signupdate: {
+        type: Date,
+        default: Date.now
     }
 })
 

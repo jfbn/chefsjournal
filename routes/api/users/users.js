@@ -18,8 +18,10 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/currentuser', (req, res) => {
-    if(req.session.username != undefined) {
-        return res.json(req.session.username);
+    if(req.session.username !== undefined) {
+        UserModel.find({"username": req.session.username}, {hash: 0}).then(model => {
+            return res.json(model);
+        });
     }
     else {
         return res.status(400).send({response: "no logged in user"});

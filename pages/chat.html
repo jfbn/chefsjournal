@@ -91,30 +91,39 @@
         });
 
         const replyAsJson = await reply.json();
+        let isTyping = false;
 
         const username = replyAsJson.username;
 
         
         var socket = io();
-        $('#messagefield').change( () => {
-            if($('#messagefield').val() == ""){
+        $('#messagefield').on("keyup", () => {
+            if($('#messagefield').val().length <= 0 && isTyping){
                 socket.emit('stop typing');
+                isTyping = false;
+            } else if(isTyping === false){
+                isTyping = true;
+                socket.emit('is writing');
             }
-            socket.emit('is writing');
         })
         $('form').submit(function(e) {
             e.preventDefault();
-            socket.emit('chat message', {"user": username, "msg": $('#messagefield').val()});
+            if($('#messagefield').val() === ""){
+                return;
+            }
+            socket.emit('chat message', {"username": username, "msg": $('#messagefield').val()});
             socket.emit('stop typing');
             $('#messagefield').val('');
         });
         socket.on('chat message', msg => {
-            console.log(msg.username);
+            let msgelement = $('<li>').text(msg.username + ": " + msg.msg);
+            msgelement.append('<span class="float-right">' + new Date().toTimeString().substring(0, 8) + '<i style="margin-left: 5px;" class="fa fa-clock-o"></i></span>')
             if(msg.username === username) {
-                $('#messages').append($('<li class="selfsent">').text(msg));
+                msgelement.addClass('selfsent');
             } else {
-                $('#messages').append($('<li class="received">').text(msg));
+                msgelement.addClass('received');
             }
+            $('#messages').append(msgelement);
             $('#messages').animate({scrollTop: $('#messages').height() + 10000}, "slow")
         });
         socket.on('user typing', () => {
