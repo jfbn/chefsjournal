@@ -197,7 +197,6 @@
             });
 
             const cooksAsJson = await matchingCooks.json();
-            console.log(cooksAsJson);
             if(cooksAsJson.model !== undefined) {
                 cooksAsJson.model.forEach(cook => {
                     $('#cooklist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)

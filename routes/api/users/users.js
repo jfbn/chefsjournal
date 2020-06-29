@@ -33,7 +33,7 @@ router.post('/', (req, res) => {
     console.log("got a new user post");
     console.log(req.body);
 
-    if (username && password && firstname && email && subscribed) {
+    if (username && password && firstname && email && subscribed !== undefined) {
 
         // format input to our liking
         firstnameFormated = (firstname.charAt(0) + "" ).toUpperCase() + firstname.substring(1).toLowerCase();
