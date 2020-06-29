@@ -21,6 +21,10 @@
         #contentlist a {
             cursor: pointer;
         }
+        #cooklist {
+            height: 550px;
+            overflow: auto;
+        }
     </style>
 </head>
 <body>
@@ -39,17 +43,18 @@
                 <h2 id="greeting">Welcome, anon</h2>
                 <br>
                 <ul class="list-group">
-                    <li class="list-group-item active"><a href="#">Profile</a></li>
+                    <li class="list-group-item active"><a href="/">Feed</a></li>
                     <li class="list-group-item"><a href="/newcook">New cook</a></li>
-                    <li class="list-group-item"><a href="/cook">Specific cook</a></li>
-                    <li class="list-group-item"><a href="/mystats">Stats</a></li>
+                    <li class="list-group-item"><a href="/cook">Search for cooks</a></li>
                     <li class="list-group-item"><a href="/chat">Chatroom</a></li>
+                    <li class="list-group-item"><a href="/profile">Profile</a></li>
                     <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
                 </ul>
             </div>
             <div class="col-sm-8" id="contenttab">
-                <h2>Your recent cooks</h2>
+                <h2>Recent cooks</h2>
                 <br>
+                <ul class="list-group d-none" id="cooklist">
                 <div id="contentlist">
                 </div>
             </div>
@@ -85,72 +90,30 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
+        $(document).ready( async () => {
+            const session = await fetch(`${window.location.origin}/api/auth/session`, {
+                method: 'GET',
+            })
 
-        // TODO: Refactor this into single use functions instead of nasty chaining..
-        
-        // get information about the session to know about the logged in user
-        fetch(`${window.location.origin}/api/auth/session`, {
-            method: 'GET',
-        }).then( (res) => {
-            return res.json();
-        }).then( (session) => {
-            let expressSession = session;
-            document.getElementById('greeting').innerHTML = "Welcome, " + session.firstname;
+            const sessionAsJson = await session.json();
+            document.getElementById('greeting').innerHTML = "Welcome, " + sessionAsJson.firstname;
 
-            // get all the cooks this user created
-            fetch(`${window.location.origin}/api/cooks/matching`, {
-                method: 'POST',
+            const matchingCooks = await fetch(`${window.location.origin}/api/cooks/`, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({"chefName": expressSession.username})
-            }).then(reply => {
-                return reply.json();
-            }).then(json => {
-
-                const contentlist = document.getElementById('contentlist');
-
-                json.model.forEach(element => {
-
-                    // for each cook the logged in user has created
-                    let newEntry = document.createElement('a');
-                    newEntry.cookId = element._id;
-                    newEntry.setAttribute("data-toggle", "modal");
-                    newEntry.setAttribute("data-target", "cookModal");
-                    newEntry.innerHTML = `
-                    <div class="row" data-toggle="modal" data-target="#cookModal">
-                        <div class="col-sm-4">
-                            <div class="card-body">
-                                ${element.dishName} for ${element.amountOfEaters} people
-                            </div>
-                        </div>
-                        <div class="col-sm-8">
-                            <div class="card-body float-right"><p><span><i class="far fa-clock"></i></span> ${element.duration}</p><p><span><i class="fas fa-calendar-day" style="padding: 5px"></i></span>${new Date(element.date).getDate()} / ${new Date(element.date).getMonth()}</p></div>
-                        </div>
-                    </div>`
-                    newEntry.className += "card"
-                                    
-                    newEntry.addEventListener('click', (event) => {
-                        populateModal(element);
-                    });
-                    for(let property in element) {
-                        newEntry.setAttribute(property, element[property]);
-                    }
-                    contentlist.append(newEntry)
-                });
             });
-                            
-        })
 
-        populateModal =  function(cookElement){
-            document.getElementById('modalTitle').innerHTML = cookElement.dishName;
-            document.getElementById('modalAmountOfEaters').innerHTML = "Servings: " + cookElement.amountOfEaters;
-            document.getElementById('modalDuration').innerHTML = "Cooking time: " + cookElement.duration + " minutes";
-            document.getElementById('modalPrice').innerHTML = "Cost: " + cookElement.price;
-            document.getElementById('modalDifficulty').innerHTML = "Difficulty: " + cookElement.difficulty
-        }
+            const cooksAsJson = await matchingCooks.json();
+            if(cooksAsJson.model !== undefined) {
+                cooksAsJson.model.forEach(cook => {
+                    $('#cooklist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)
+                });
+                $('#cooklist').removeClass('d-none');
+            }
 
-        
+        });
     </script>
 </body>
 </html>

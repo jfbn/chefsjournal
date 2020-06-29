@@ -38,11 +38,11 @@
                 <h2 id="greeting">Welcome, anon</h2>
                 <br>
                 <ul class="list-group">
-                    <li class="list-group-item "><a href="/">Profile</a></li>
+                    <li class="list-group-item "><a href="/">Feed</a></li>
                     <li class="list-group-item"><a href="/newcook">New cook</a></li>
-                    <li class="list-group-item active"><a href="/cook">Specific cook</a></li>
-                    <li class="list-group-item"><a href="/mystats">Stats</a></li>
+                    <li class="list-group-item active"><a href="/cook">Search for cooks</a></li>
                     <li class="list-group-item"><a href="/chat">Chatroom</a></li>
+                    <li class="list-group-item"><a href="/profile">Profile</a></li>
                     <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
                 </ul>
             </div>
@@ -59,17 +59,21 @@
                         </div>
                     </div>
                 </div>
-                <div id="contentlist">
+                <ul class="d-none" id="resultlist">
+
+                </ul>
+                <div id="contentlist" class="d-none">
+
                     
-                    <h3 id="dishname">Dishname</h3>
+                    <h4 id="dishname">Dishname</h4>
                     <small id="servingsText" style="padding-bottom: 25px;">for 4 people.</small>
                     <small id="lastcook"></small>
-                    <h3>Ingredients</h3>
-                    <ul id="ingredients">
+                    <h4>You need</h4>
+                    <ul class="list-group" id="ingredients">
                     </ul>
-                    <h3>Instructions</h3>
+                    <h4>Instructions</h4>
                     <textarea class="form-control" id="instructions" rows="3" readonly></textarea>
-                    <h3>Comments</h3>
+                    <h4>Comments</h4>
                     <textarea class="form-control" id="comments" rows="3" readonly></textarea>
                 
                     <button id="deleteButton" class="btn btn-danger float-right" style="margin-top: 5px;">Delete cook</button>
@@ -79,17 +83,45 @@
         </div>
     </div>
 
-    <script src="/js/getsession.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script>
-        $(document).ready( () => {
-            console.log(window.location.href);
-            console.log(window.location.href.substring((window.location.href.indexOf('k')) + 2 ));
-            // this page will 
+        $(document).ready( async () => {
+
+            const reply = await fetch(`${window.location.origin}/api/auth/session`, {
+            type: 'GET'
+            });
+
+            const populatePage = (cook) => {
+                if(!cook) {
+                    // un bind in case there are previously bound click listeners
+                    $('#deleteButton').off('click');
+                    alert("no results!");
+                    return;    
+                }
+                $('#deleteButton').click( async (event) => {
+                    const reply = await fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
+                        method: 'DELETE'
+                    })
+                    const replyAsJson = await reply.json();
+                });
+                
+                $('#ingredients').empty();
+                cook.ingredients.forEach(ingredient => {
+                    $('#ingredients').append(`<li class="list-group-item">${ingredient}</li>`);
+                });
+                $('#servingsText').text(`A ${cook.difficulty.toLowerCase()} dish cooked for ${cook.amountOfEaters} people`)
+                $('#lastcook').text(`Cook uploaded on ${new Date(cook.date).toDateString()}`)
+                $('#dishname').text(`${cook.dishName} for ${cook.cost.amount}${cook.cost.currency} in ${cook.duration} minutes`)
+                $('#comments').text(`${cook.comments}`);
+
+                $('#comments').innerHTML = cook.comments;
+                $('#instructions').innerHTML = cook.instructions;
+                $('#contentlist').removeClass('d-none');
+            }
             // if url includes an id (which it will when redirected from having created a new cook)
             if(window.location.href.substring((window.location.href.indexOf('k')) + 2 ) !== "" ){
-                fetch(`${window.location.origin}/api/cooks/matching`, {
+                const result = await fetch(`${window.location.origin}/api/cooks/matching`, {
                             method: 'POST',
                             headers: {
                                 "Content-type": "application/json"
@@ -97,25 +129,20 @@
                             body: JSON.stringify({
                                 "_id": window.location.href.substring((window.location.href.indexOf('k') + 2))
                             })
-                }).catch( err => {
-                    console.log("there was an error");
-                    console.log(err);
-                }).then( reply => {
-                    return reply.json();
-                }).then ( json => {
-                    console.log(json);
-                    // found a cook with the requested id
-                    if(json != null && json.model.length > 0) {
-                        populatePage(json.model[0]);
-                    } 
                 });
+                const resultAsJson = await result.json();
+                populatePage(resultAsJson.model[0]);
             }
     
+            // handler for searching for a specific cook via the input form
             $('#findcook').click( async (event) => {
-                console.log($("#dishNameField").val()); 
+                $('#resultlist').empty();
+                $('#contentlist').addClass('d-none');
+
+
                 const dishname = $('#dishNameField').val();
                 // find a cook matching the input
-                const cook = await fetch(`${window.location.origin}/api/cooks/matching`, {
+                const result = await fetch(`${window.location.origin}/api/cooks/matching`, {
                     method: "POST",
                     headers: {
                         "Content-type": "application/json"
@@ -125,42 +152,18 @@
                     })
                 });
     
-                const cookAsJson = await cook.json();
-                console.log(cookAsJson);
-                console.log(cookAsJson.model[0]);
-                populatePage(cookAsJson.model[0]);
+                const resultAsJson = await result.json();
+                if(resultAsJson.model.length > 1){
+                    $('#resultlist').removeClass('d-none');
+
+                    resultAsJson.model.forEach(cook => {
+                        $('#resultlist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)
+                    });
+                } else {
+                    populatePage(resultAsJson.model[0]);
+                }
             });
     
-            populatePage = (cook) => {
-                if(!cook) {
-                    // un bind in case there are previously bound click listeners
-                    $('#deleteButton').off('click');
-                    alert("no results!");
-                    return;    
-                }
-                $('#deleteButton').click( (event) => {
-                    fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
-                        method: 'DELETE'
-                    }).then( (reply) => {
-                        console.log(reply);
-                        return reply.json();
-                    }).then( (replyAsJson) => {
-                        console.log(replyAsJson);
-                    })
-                })
-                
-                $('#ingredients').empty();
-                cook.ingredients.forEach(ingredient => {
-                    $('#ingredients').append(`<li>${ingredient}</li>`);
-                });
-                $('#servingsText').text(`A ${cook.difficulty.toLowerCase()} dish cooked for ${cook.amountOfEaters} people`)
-                $('#lastcook').text(`Cook uploaded on ${new Date(cook.date).toDateString()}`)
-                $('#dishname').text(`${cook.dishName} for ${cook.cost.amount}${cook.cost.currency} in ${cook.duration} minutes`)
-                $('#comments').text(`${cook.comments}`);
-
-                document.getElementById('comments').innerHTML = cook.comments;
-                document.getElementById('instructions').innerHTML = cook.instructions;
-            }
         })
 
     </script>

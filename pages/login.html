@@ -131,7 +131,7 @@
             
             if(session.wrongpassword > 0) {
                 const forgotPasswordDiv = document.createElement("DIV");
-                forgotPasswordDiv.innerHTML = session.wrongpassword;;
+                forgotPasswordDiv.innerHTML = "<a href=\"#\">Did you forget your password?</a>";
                 forgotPasswordDiv.className += " forgot-pw-text"
 
                 document.getElementById('loginDiv').append(forgotPasswordDiv);
@@ -139,6 +139,7 @@
 
         })
 
+        // sign up new user
         document.getElementById('signupbutton').addEventListener('click', (event) => {
             event.preventDefault();
             
@@ -147,9 +148,10 @@
             const firstname = document.getElementById('signupform-firstname').value;
             const password = document.getElementById('signupform-password').value;
             const email = document.getElementById('signupform-email').value;
-            let subscribed = document.getElementById('checkbox624').checked;
+            const subscribed = document.getElementById('checkbox624').checked;
 
             // validate data
+
             // todo
 
             // send post request
@@ -162,7 +164,6 @@
             }).then( reply => {
                 return reply.json();
             }).then ( json => {
-                console.log(json);
                 window.location.href = `${window.location.origin}`;
             })
         })

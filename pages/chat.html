@@ -22,8 +22,15 @@
         }
         #messages {
             height: 355px;
-            background: aqua;
+            background: #F5F5F5;
             overflow: auto;
+        }
+        #contentlist li.selfsent{
+            background-color: greenyellow;
+            margin-bottom: 5px;
+        }#contentlist li.received{
+            background-color: pink;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -45,11 +52,11 @@
                 <h2 id="greeting">Welcome, anon</h2>
                 <br>
                 <ul class="list-group">
-                    <li class="list-group-item"><a href="/">Profile</a></li>
-                    <li class="list-group-item"><a href="/newcook">New cook</a></li>
-                    <li class="list-group-item"><a href="/cook">Specific cook</a></li>
-                    <li class="list-group-item"><a href="/mystats">Stats</a></li>
-                    <li class="list-group-item active"><a href="#">Chatroom</a></li>
+                    <li class="list-group-item "><a href="/">Feed</a></li>
+                    <li class="list-group-item "><a href="/newcook">New cook</a></li>
+                    <li class="list-group-item"><a href="/cook">Search for cooks</a></li>
+                    <li class="list-group-item active"><a href="/chat">Chatroom</a></li>
+                    <li class="list-group-item"><a href="/profile">Profile</a></li>
                     <li class="list-group-item"><a href="/api/auth/logout">Logout</a></li>
                 </ul>
             </div>
@@ -71,38 +78,53 @@
         </div>
     </div>
 
-    <script src="/js/getsession.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.js" integrity="sha256-DrT5NfxfbHvMHux31Lkhxg42LY6of8TaYyK50jnxRnM=" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
-    $(async function () {
+    $(document).ready( async () => {
 
         const reply = await fetch(`${window.location.origin}/api/auth/session`, {
             type: 'GET'
         });
 
         const replyAsJson = await reply.json();
+        document.getElementById('greeting').innerHTML = "Welcome, " + replyAsJson.firstname;
+
+        let isTyping = false;
 
         const username = replyAsJson.username;
 
         
         var socket = io();
-        $('#messagefield').change( () => {
-            if($('#messagefield').val() == ""){
+        $('#messagefield').on("keyup", () => {
+            if($('#messagefield').val().length <= 0 && isTyping){
                 socket.emit('stop typing');
+                isTyping = false;
+            } else if(isTyping === false){
+                isTyping = true;
+                socket.emit('is writing');
             }
-            socket.emit('is writing');
         })
         $('form').submit(function(e) {
             e.preventDefault();
-            socket.emit('chat message', {"user": username, "msg": $('#messagefield').val()});
+            if($('#messagefield').val() === ""){
+                return;
+            }
+            socket.emit('chat message', {"username": username, "msg": $('#messagefield').val()});
             socket.emit('stop typing');
             $('#messagefield').val('');
         });
         socket.on('chat message', msg => {
-            $('#messages').append($('<li>').text(msg));
+            let msgelement = $('<li>').text(msg.username + ": " + msg.msg);
+            msgelement.append('<span class="float-right">' + new Date().toTimeString().substring(0, 8) + '<i style="margin-left: 5px;" class="fa fa-clock-o"></i></span>')
+            if(msg.username === username) {
+                msgelement.addClass('selfsent');
+            } else {
+                msgelement.addClass('received');
+            }
+            $('#messages').append(msgelement);
             $('#messages').animate({scrollTop: $('#messages').height() + 10000}, "slow")
         });
         socket.on('user typing', () => {
