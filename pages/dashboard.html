@@ -96,8 +96,10 @@
             })
 
             const sessionAsJson = await session.json();
-            document.getElementById('greeting').innerHTML = "Welcome, " + sessionAsJson.firstname;
+            // greet the user
+            $('#greeting').text("Welcome, " + sessionAsJson.firstname);
 
+            // find recent cooks
             const matchingCooks = await fetch(`${window.location.origin}/api/cooks/`, {
                 method: 'GET',
                 headers: {
@@ -106,7 +108,10 @@
             });
 
             const cooksAsJson = await matchingCooks.json();
+
+            // if 'model' is present we know our db at least replied
             if(cooksAsJson.model !== undefined) {
+                // for each cook it found
                 cooksAsJson.model.forEach(cook => {
                     $('#cooklist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)
                 });

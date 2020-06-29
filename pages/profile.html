@@ -186,6 +186,7 @@
             const username = resultAsJson.username;
             $('#greeting').text('Welcome, ' + resultAsJson.firstname);
 
+            // find the cooks this user uploaded
             const matchingCooks = await fetch(`${window.location.origin}/api/cooks/matching`, {
                 method: 'POST',
                 headers: {
@@ -197,6 +198,8 @@
             });
 
             const cooksAsJson = await matchingCooks.json();
+
+            // if 'model' exists, we know we got a reply from database
             if(cooksAsJson.model !== undefined) {
                 cooksAsJson.model.forEach(cook => {
                     $('#cooklist').append(`<li class=\"list-group-item\" id="${cook._id}"><a href=${"/cook/" + cook._id}>${cook.dishName}</a> by ${cook.chefName} <span class=\"float-right\">${new Date(cook.date).toDateString()}<span><i class="fas fa-calendar-day" style="padding: 5px"></i></span></span></li>`)
@@ -205,6 +208,7 @@
                 $('#cooklist').removeClass('d-none');
             }
 
+            // get information about the user
             const profileData = await fetch(window.location.origin + '/api/users/currentuser');
             const profileDataAsJson = await profileData.json();
             $('#bigname').text(profileDataAsJson[0].firstname);
@@ -212,6 +216,7 @@
             $('#emailfield').text(profileDataAsJson[0].email || "no email");
             $('#signupdatefield').text(new Date(profileDataAsJson[0].signupdate).toDateString());
 
+            // styling the ul with borders based on scroll position
             $('#cooklist').scroll( () => {
                 if($('#cooklist').scrollTop() > 0 ){
                     $('#cooklist').addClass("border-top");
@@ -219,50 +224,6 @@
                     $('#cooklist').removeClass("border-top");
                 }
             })
-
-
-
-            // sample below
-            $imgSrc = $('#imgProfile').attr('src');
-            function readURL(input) {
-
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $('#imgProfile').attr('src', e.target.result);
-                    };
-
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-            $('#btnChangePicture').on('click', function () {
-                // document.getElementById('profilePicture').click();
-                if (!$('#btnChangePicture').hasClass('changing')) {
-                    $('#profilePicture').click();
-                }
-                else {
-                    // change
-                }
-            });
-            $('#profilePicture').on('change', function () {
-                readURL(this);
-                $('#btnChangePicture').addClass('changing');
-                $('#btnChangePicture').attr('value', 'Confirm');
-                $('#btnDiscard').removeClass('d-none');
-                // $('#imgProfile').attr('src', '');
-            });
-            $('#btnDiscard').on('click', function () {
-                // if ($('#btnDiscard').hasClass('d-none')) {
-                $('#btnChangePicture').removeClass('changing');
-                $('#btnChangePicture').attr('value', 'Change');
-                $('#btnDiscard').addClass('d-none');
-                $('#imgProfile').attr('src', $imgSrc);
-                $('#profilePicture').val('');
-                // }
-            });
-
-            // sample end
         })
     </script>
 </body>

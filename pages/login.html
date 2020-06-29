@@ -64,7 +64,7 @@
             <input type="submit" id="submitButton" value="Login">
             <div class="text-center">
                 <a href="" style="margin-top: 15px;" class="btn btn-default btn-rounded mb-4" data-toggle="modal" data-target="#modalRegisterForm">Or signup for a new account!</a>
-              </div>
+            </div>
         </form>
     </div>
 
@@ -123,59 +123,55 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     
     <script>
-        fetch(`${window.location.origin}/api/auth/session`, {
-            method: 'GET'
-        }).then((resp) => {
-            return resp.json();
-        }).then((session) => {
-            
-            if(session.wrongpassword > 0) {
-                const forgotPasswordDiv = document.createElement("DIV");
+        $(document).ready( async () => {
+            const sesh = await fetch(`${window.location.origin}/api/auth/session`);
+            const seshAsJson = await sesh.json();
+
+            if(seshAsJson.wrongpassword > 0) {
+                const forgotPasswordDiv = $('<div>');
                 forgotPasswordDiv.innerHTML = "<a href=\"#\">Did you forget your password?</a>";
                 forgotPasswordDiv.className += " forgot-pw-text"
 
-                document.getElementById('loginDiv').append(forgotPasswordDiv);
+                $('#loginDiv').append(forgotPasswordDiv);
             }
 
-        })
-
-        // sign up new user
-        document.getElementById('signupbutton').addEventListener('click', (event) => {
-            event.preventDefault();
-            
-            // get data from fields
-            const username = $('#signupform-username').val();
-            const firstname = ($('#signupform-firstname').val().charAt(0) + "").toUpperCase() + $('#signupform-firstname').val().substring(1);
-            const password = $('#signupform-password').val();
-            const email = $('#signupform-email').val();
-            const subscribed = $('#checkbox624').prop('checked');
-            // validate data
-
-            // todo
-
-            // send post request    
-            fetch(`${window.location.origin}/api/users`, {
-                method: 'POST',
-                body: JSON.stringify({"username": username, "firstname": firstname, "password": password, "email": email, "subscribed": subscribed}),
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }).then( reply => {
-                return reply.json();
-            }).then ( json => {
-                if(json.error) {
+            // sign up new user
+            $('#signupbutton').click(async (event) => {
+                event.preventDefault();
+                
+                // get data from fields
+                const username = $('#signupform-username').val();
+                const firstname = ($('#signupform-firstname').val().charAt(0) + "").toUpperCase() + $('#signupform-firstname').val().substring(1);
+                const password = $('#signupform-password').val();
+                const email = $('#signupform-email').val();
+                const subscribed = $('#checkbox624').prop('checked');
+    
+                // send post request    
+                const postReply = await fetch(`${window.location.origin}/api/users`, {
+                    method: 'POST',
+                    body: JSON.stringify({"username": username, "firstname": firstname, "password": password, "email": email, "subscribed": subscribed}),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                
+                const postReplyAsJson = await postReply.json();
+                if(postReply.error) {
                     alert(json.error);
+                    return;
                 }
                 window.location.href = `${window.location.origin}`;
-            })
-        })
+            });
+    
+            // when submitting the form (by pressing login) replace the login button with a spinning loader
+            $('#loginForm').on('submit', (event) => {
+                $('#submitButton').replaceWith("<div class=\"loader align-middle\"/>");
+            });
 
-
-        document.forms['loginForm'].addEventListener('submit', (event) => {
-            let loader = document.createElement("DIV");
-            loader.className += " loader";
-            document.getElementById('submitButton').replaceWith(loader)
         });
+        
+        
+
     </script>
 </body>
 </html>

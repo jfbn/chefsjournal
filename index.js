@@ -13,6 +13,8 @@ const rateLimit = require('express-rate-limit');
 // prepare for sockets
 io.on('connection', (socket) => {
 
+    console.log("a user visited the chat");
+
     socket.on('chat message', msgobject => {
         io.emit('chat message', msgobject);
     });

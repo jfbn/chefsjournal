@@ -84,31 +84,40 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
     $(document).ready( async () => {
-
+        let isTyping = false;
+        
+        // greet the user
         const reply = await fetch(`${window.location.origin}/api/auth/session`, {
             type: 'GET'
         });
-
         const replyAsJson = await reply.json();
-        document.getElementById('greeting').innerHTML = "Welcome, " + replyAsJson.firstname;
-
-        let isTyping = false;
-
         const username = replyAsJson.username;
-
+        $('#greeting').text("Welcome, " + replyAsJson.firstname);
         
+        // establish socket connection to server for chat functionality
         var socket = io();
+
+        // when a key is pressed, emit either a 'is writing' or 'stop typing' event
         $('#messagefield').on("keyup", () => {
-            if($('#messagefield').val().length <= 0 && isTyping){
-                socket.emit('stop typing');
-                isTyping = false;
-            } else if(isTyping === false){
+            //if user wasnt already typing, 
+            if(isTyping === false) {
+                //they are now
                 isTyping = true;
                 socket.emit('is writing');
+                
+            // if there is currently nothing in the input field, and the user is writing,
+            } else if ($('#messagefield').val().length <= 0 && isTyping) {
+                // they no longer are 
+                socket.emit('stop typing');
+                isTyping = false;
             }
         })
+
+        // when submitting a message either via ENTER (while input field is in focus) or by pressing the 'send' button
         $('form').submit(function(e) {
+            // prevent default form behaviour
             e.preventDefault();
+            // if there is no message, do nothing
             if($('#messagefield').val() === ""){
                 return;
             }
@@ -116,17 +125,26 @@
             socket.emit('stop typing');
             $('#messagefield').val('');
         });
+
+        // when receiving a chat message, relayed from the server
         socket.on('chat message', msg => {
+            // create new html element, a <li> element that includes the identity of the sender and the message
             let msgelement = $('<li>').text(msg.username + ": " + msg.msg);
+                // style it and add the time of receiving the message
             msgelement.append('<span class="float-right">' + new Date().toTimeString().substring(0, 8) + '<i style="margin-left: 5px;" class="fa fa-clock-o"></i></span>')
+            // different styles for sent and received messages
             if(msg.username === username) {
                 msgelement.addClass('selfsent');
             } else {
                 msgelement.addClass('received');
             }
+            // append the html element to unordered list 'messages'
             $('#messages').append(msgelement);
+            // scroll to the bottom (hopefully) of the list 
             $('#messages').animate({scrollTop: $('#messages').height() + 10000}, "slow")
         });
+
+        // hides or displays 'someone is typing' via emits from server
         socket.on('user typing', () => {
             $('#usertyping').removeClass('d-none');
         });

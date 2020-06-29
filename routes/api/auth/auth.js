@@ -3,15 +3,8 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 
-// load user service
-const UserService = require('../../../services/userservice');
-
-// configure bcrypt
-const saltRounds = 8;
-
 // get the users mongoose model
 const UserModel = require('../../../models/model_user');
-
 
 router.post('/login', (req, res) =>{
     const { username, password } = req.body;

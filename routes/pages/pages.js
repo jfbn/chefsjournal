@@ -6,10 +6,8 @@ const path = require('path');
 var pagesDir = path.normalize(__dirname+"/../../pages");
 
 router.get('/', (req, res) => {
-
     if(req.session.username != undefined) {
         // user is logged in
-
         return res.sendFile(pagesDir + '/dashboard.html');
     }
 
@@ -25,12 +23,10 @@ router.get('/cook', (req, res) => {
 })
 
 router.get('/signup', (req, res) => {
-
     if(req.session.username != undefined) {
         return res.redirect('/');
     }
     return res.sendFile(pagesDir + '/signup.html');
-
 })
 
 router.get('/chat', (req, res) => {
@@ -41,7 +37,6 @@ router.get('/chat', (req, res) => {
 })
 
 router.get('/newcook', (req, res) => {
-
     if(req.session.username === undefined) {
         console.log(req.session);
         return res.redirect('/');
