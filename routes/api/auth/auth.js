@@ -15,8 +15,6 @@ const UserModel = require('../../../models/model_user');
 
 router.post('/login', (req, res) =>{
     const { username, password } = req.body;
-
-
     if( username && password ) {
         UserModel.findOne({"username": username})
             .then( model => {
@@ -41,7 +39,7 @@ router.post('/login', (req, res) =>{
                 }
             })
     } else {
-        return res.status(406).send('the post should be ');
+        return res.status(400).send({"response": "there was an error","err": err});
     }
 
 })

@@ -1,6 +1,9 @@
 const Cook = require('../models/model_cook');
 
 class CookService {
+    static async find(obj){
+        return await Cook.find(obj).sort('-date');
+    }
     static create(cook){
         const newCook = new Cook(cook);
         return newCook.save();

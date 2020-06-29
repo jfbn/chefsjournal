@@ -7,16 +7,15 @@ const CookService = require('../../../services/cookservice');
 const CookModel = require('../../../models/model_cook');
 
 router.get('/', (req, res) => {
-    CookModel.find({}).sort('-date').then(model => {
+    CookService.find({}).then(model => {
         return res.json({model});
     })
 });
 
 
-
 // find a users cooks
 router.post('/matching', (req, res) => {
-    CookModel.find(req.body).then( model => {
+    CookService.find(req.body).then( model => {
         return res.json({model});
     }).catch(err => {
         return res.status(400).json({"response:":"there was an error", "err":err})
@@ -26,7 +25,7 @@ router.post('/matching', (req, res) => {
 
 // find cooks matching the requested name
 router.get('/:name', (req, res) => {
-    CookModel.find({dishName: req.params.name}).then(model => {
+    CookService.find({dishName: req.params.name}).then(model => {
         return res.json({model});
     })
 });
@@ -44,18 +43,19 @@ router.post('/', async (req, res) => {
         const createResult = await CookService.create(req.body);
         return res.status(201).json({ success: createResult });
       } catch (err) {
-        // Make sure that this is a validation error and send it back to the caller
-        if (err.name === 'ValidationError') {
-          return res.status(400).json({ error: err.message });
-        } else {
             return res.status(400).json({ error: err.message });
         }
-      }
-
 });
 
-
 router.delete('/:id', async (req, res) => {
+    //find the cook first, to check ownership
+    const cook = await CookService.find({ "_id": req.params.id });
+    console.log(cook);
+    console.log(req.session.username);
+
+    if(req.session.username !== cook[0].chefName){
+        return res.status(400).json({ error: "you do not own this cook"})
+    }
     console.log("got a delete request");
     try {
         const createResult = await CookService.delete(req.params.id);

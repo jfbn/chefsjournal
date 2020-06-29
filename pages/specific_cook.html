@@ -67,7 +67,6 @@
                 </ul>
                 <div id="contentlist" class="d-none">
 
-                    
                     <h4 id="dishname">Dishname</h4>
                     <small id="servingsText" style="padding-bottom: 25px;">for 4 people.</small>
                     <small id="lastcook"></small>
@@ -94,6 +93,7 @@
             const reply = await fetch(`${window.location.origin}/api/auth/session`, {
             type: 'GET'
             });
+            const replyAsJson = await reply.json();
 
             const populatePage = (cook) => {
                 if(!cook) {
@@ -102,16 +102,22 @@
                     alert("no results!");
                     return;    
                 }
-                $('#deleteButton').click( async (event) => {
-                    const reply = await fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
-                        method: 'DELETE'
-                    })
-                    const replyAsJson = await reply.json();
-                    if(replyAsJson.success) {
-                        alert("Successfully deleted cook");
-                        window.location.href = window.location.origin + '/cook';
-                    }
-                });
+                if(cook.chefName === replyAsJson.username){
+                    $('#deleteButton').show();
+                    $('#deleteButton').click( async (event) => {
+                        const reply = await fetch(`${window.location.origin}/api/cooks/${cook._id}`, {
+                            method: 'DELETE'
+                        })
+                        const replyAsJson = await reply.json();
+                        if(replyAsJson.success) {
+                            alert("Successfully deleted cook");
+                            window.location.href = window.location.origin + '/cook';
+                        }
+                    });
+                } else {
+                    $('#deleteButton').off('click');
+                    $('#deleteButton').hide();
+                }
                 
                 $('#ingredients').empty();
                 cook.ingredients.forEach(ingredient => {
@@ -125,6 +131,7 @@
                 $('#instructions').text(cook.instructions);
                 $('#contentlist').removeClass('d-none');
             }
+
             // if url includes an id (which it will when redirected from having created a new cook)
             if(window.location.href.substring((window.location.href.indexOf('ook')) + 4 ) !== "" ){
                 const result = await fetch(`${window.location.origin}/api/cooks/matching`, {
