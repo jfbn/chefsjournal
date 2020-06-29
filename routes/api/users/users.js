@@ -30,6 +30,8 @@ router.get('/currentuser', (req, res) => {
 
 router.post('/', (req, res) => {
     const { username, password, firstname, email, subscribed} = req.body;
+    console.log("got a new user post");
+    console.log(req.body);
 
     if (username && password && firstname && email && subscribed) {
 
