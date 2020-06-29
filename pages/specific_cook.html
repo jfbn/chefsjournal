@@ -123,14 +123,14 @@
                 $('#contentlist').removeClass('d-none');
             }
             // if url includes an id (which it will when redirected from having created a new cook)
-            if(window.location.href.substring((window.location.href.indexOf('ok')) + 3 ) !== "" ){
+            if(window.location.href.substring((window.location.href.indexOf('ook')) + 4 ) !== "" ){
                 const result = await fetch(`${window.location.origin}/api/cooks/matching`, {
                             method: 'POST',
                             headers: {
                                 "Content-type": "application/json"
                             },
                             body: JSON.stringify({
-                                "_id": window.location.href.substring((window.location.href.indexOf('ok') + 3))
+                                "_id": window.location.href.substring((window.location.href.indexOf('ook') + 4))
                             })
                 });
                 const resultAsJson = await result.json();
