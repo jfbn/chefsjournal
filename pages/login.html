@@ -145,7 +145,7 @@
             
             // get data from fields
             const username = $('#signupform-username').val();
-            const firstname = $('#signupform-firstname').val();
+            const firstname = ($('#signupform-firstname').val().charAt(0) + "").toUpperCase() + $('#signupform-firstname').val().substring(1);
             const password = $('#signupform-password').val();
             const email = $('#signupform-email').val();
             const subscribed = $('#checkbox624').prop('checked');

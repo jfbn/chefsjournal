@@ -52,14 +52,14 @@ app.set('trust proxy', 1);
 
 // rate limiter to prevent being run over
 const ApiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    // 100 requests each 15 minute
-    max: 100
+    windowMs: 5 * 60 * 1000,
+    // 150 requests each 5 minutes
+    max: 150
 });
 const AuthLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    // 8 requests each 15 minutes
-    max: 8
+    windowMs: 5 * 60 * 1000,
+    // 15 requests each 5 minutes
+    max: 15
 });
 app.use('/api/', ApiLimiter);
 app.use('/auth/', AuthLimiter);

@@ -18,7 +18,7 @@ router.post('/login', (req, res) =>{
 
 
     if( username && password ) {
-        UserModel.findOne({"username": username.toLowerCase()})
+        UserModel.findOne({"username": username})
             .then( model => {
                 if(model == null) {
                     return res.redirect('/');
@@ -26,7 +26,7 @@ router.post('/login', (req, res) =>{
                 try {
                     bcrypt.compare(password, model.hash, (err, result) => {
                         if(result){
-                            req.session.username = username.toLowerCase();
+                            req.session.username = username;
                             req.session.firstname = model.firstname;
                             req.session.wrongpassword = 0;
                             console.log(username +" logged in");
