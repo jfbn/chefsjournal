@@ -7,8 +7,7 @@ const CookService = require('../../../services/cookservice');
 const CookModel = require('../../../models/model_cook');
 
 router.get('/', (req, res) => {
-    CookModel.find({}).then(model => {
-        console.log
+    CookModel.find({}).sort('-date').then(model => {
         return res.json({model});
     })
 });
@@ -34,11 +33,15 @@ router.get('/:name', (req, res) => {
 
 // save a new cook document to mongodb
 router.post('/', async (req, res) => {
+    console.log("got a new dish post: ");
+    console.log(req.body);
     try {
         // get information about user from req.session and attach to the body
         req.body.chefName = req.session.username;
+        if(req.body.date.length < 1) {
+            req.body.date = Date.now();
+        }
         const createResult = await CookService.create(req.body);
-        console.log(createResult);
         return res.status(201).json({ success: createResult });
       } catch (err) {
         // Make sure that this is a validation error and send it back to the caller

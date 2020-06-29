@@ -7,6 +7,7 @@ const config = require('./config/sessionconfig.json')
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
+const nodemailer = require('nodemailer');
 const rateLimit = require('express-rate-limit');
 
 // prepare for sockets

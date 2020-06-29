@@ -100,9 +100,9 @@
                                                 </div>
                                             </div>
                                             <div class="userData ml-3">
-                                                <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold; color: #007bff">Johan Nærby</h2>
+                                                <h2 class="d-block" style="font-size: 1.5rem; font-weight: bold; color: #007bff" id="bigname">Johan Nærby</h2>
                                                 <h6 class="d-block"><a href="javascript:void(0)" id="uploadcount">1,500</a> Cook Uploads</h6>
-                                                <h6 class="d-block"><a href="javascript:void(0)">11</a> Cook comments</h6>
+                                                <h6 class="d-block"><a href="javascript:void(0)">0</a> Cook comments</h6>
                                             </div>
                                             <div class="ml-auto">
                                                 <input type="button" class="btn btn-primary d-none" id="btnDiscard" value="Discard Changes" />
@@ -207,6 +207,7 @@
 
             const profileData = await fetch(window.location.origin + '/api/users/currentuser');
             const profileDataAsJson = await profileData.json();
+            $('#bigname').text(profileDataAsJson[0].firstname);
             $('#fullnamefield').text(profileDataAsJson[0].firstname);
             $('#emailfield').text(profileDataAsJson[0].email || "no email");
             $('#signupdatefield').text(new Date(profileDataAsJson[0].signupdate).toDateString());
@@ -217,7 +218,6 @@
                 } else if ($('#cooklist').scrollTop() === 0 ) {
                     $('#cooklist').removeClass("border-top");
                 }
-                console.log($('#cooklist').scrollTop());
             })
 
 

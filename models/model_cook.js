@@ -51,7 +51,8 @@ const cookSchema = new mongoose.Schema( {
     },
     date: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        
     },
     comments: {
         type: String,

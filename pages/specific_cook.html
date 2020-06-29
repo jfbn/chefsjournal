@@ -107,19 +107,22 @@
                         method: 'DELETE'
                     })
                     const replyAsJson = await reply.json();
+                    if(replyAsJson.success) {
+                        alert("Successfully deleted cook");
+                        window.location.href = window.location.origin + '/cook';
+                    }
                 });
                 
                 $('#ingredients').empty();
                 cook.ingredients.forEach(ingredient => {
                     $('#ingredients').append(`<li class="list-group-item">${ingredient}</li>`);
                 });
+
                 $('#servingsText').text(`A ${cook.difficulty.toLowerCase()} dish cooked for ${cook.amountOfEaters} people`)
                 $('#lastcook').text(`Cook uploaded on ${new Date(cook.date).toDateString()}`)
-                $('#dishname').text(`${cook.dishName} for ${cook.cost.amount}${cook.cost.currency} in ${cook.duration} minutes`)
+                $('#dishname').text(`${cook.dishName.charAt(0).toUpperCase() + "" + cook.dishName.substring(1).toLowerCase() } for ${cook.cost.amount}${cook.cost.currency} in ${cook.duration} minutes`)
                 $('#comments').text(`${cook.comments}`);
-
-                $('#comments').innerHTML = cook.comments;
-                $('#instructions').innerHTML = cook.instructions;
+                $('#instructions').text(cook.instructions);
                 $('#contentlist').removeClass('d-none');
             }
             // if url includes an id (which it will when redirected from having created a new cook)
@@ -154,8 +157,8 @@
                         "dishName": dishname
                     })
                 });
-    
                 const resultAsJson = await result.json();
+
                 if(resultAsJson.model.length > 1){
                     $('#resultlist').removeClass('d-none');
 

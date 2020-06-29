@@ -159,9 +159,8 @@
             
             $('#saveCookButton').click(async (event) => {
                 event.preventDefault();
-                console.log("clicked");
                 // TODO: check if necessary input is present
-                const dishName = $('#dishNameField').val();
+                const dishName = $('#dishNameField').val().charAt(0).toUpperCase() + "" + $('#dishNameField').val().substring(1);
                 const dishDate = $('#dateField').val();
                 const ingredients = $('#ingredientsField').val();
                 const duration = $('#durationField').val();
@@ -180,11 +179,11 @@
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        "dishName": dishName,
+                        "dishName": (dishName.charAt(0) + "").toUpperCase() + dishName.substring(1).toLowerCase(),
                         "date": dishDate,
                         "ingredients": ingredients.split(", "),
                         "duration": duration,
-                        "amountOfEaters": servings,
+                        "amountOfEaters": servings, 
                         "cost": {
                             "amount": cost,
                             "currency": currency
@@ -196,7 +195,6 @@
                     })
                 });
                 const resultAsJson = await result.json();
-                console.log(resultAsJson);
                 if(resultAsJson.success) {
                     window.location.href = window.location.origin + '/cook/' + resultAsJson.success._id;
                 } else {
